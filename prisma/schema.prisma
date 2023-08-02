@@ -1,0 +1,204 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["metrics", "public"]
+}
+
+model query {
+  id              Int      @id @default(autoincrement())
+  sql             String
+  data            Json?
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime @default(now()) @db.Timestamptz(6)
+  error           String?
+  runtime_seconds Decimal? @db.Decimal
+  status          Int?     @default(0)
+  teamId          Int?
+  creatorId       String
+  name            String
+
+  visualizations  visualization[]
+  creator         user            @relation(fields: [creatorId], references: [id])
+
+  @@schema("public")
+}
+
+model team {
+  id        Int     @id @default(autoincrement())
+  name      String
+  creatorId String
+  plan      String? @default("starter")
+
+  team_user team_user[]
+
+  @@schema("public")
+}
+
+model team_user {
+  id     Int    @id @default(autoincrement())
+  teamId Int
+  userId String
+  role   String @default("member")
+
+  team team @relation(fields: [teamId], references: [id])
+  user user @relation(fields: [userId], references: [id])
+
+  @@schema("public")
+}
+
+model user {
+  id        String  @id
+  name      String
+  email     String
+  image     String?
+  loginType String
+
+  team_user team_user[]
+  dashboard dashboard[]
+  query     query[]
+
+  @@schema("public")
+}
+
+model dashboard {
+  id         Int      @id @default(autoincrement())
+  config     Json?
+  teamId     Int
+  creatorId  String
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+  name       String?
+
+  creator                 user                      @relation(fields: [creatorId], references: [id])
+  dashboard_visualization dashboard_visualization[]
+
+  @@schema("public")
+}
+
+model visualization {
+  id         Int      @id @default(autoincrement())
+  queryId    Int
+  config     Json?
+  teamId     Int
+  creatorId  String
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+
+  query                   query                     @relation(fields: [queryId], references: [id])
+  dashboard_visualization dashboard_visualization[]
+
+  @@schema("public")
+}
+
+model dashboard_visualization {
+  id              Int    @id @default(autoincrement())
+  dashboardId     Int
+  visualizationId Int
+  teamId          Int
+  creatorId       String
+  queryId         Int
+
+  dashboard     dashboard     @relation(fields: [dashboardId], references: [id])
+  visualization visualization @relation(fields: [visualizationId], references: [id])
+
+  @@schema("public")
+}
+
+model project_config {
+  id                     Int       @id @default(autoincrement())
+  name                   String?   @unique
+  minted_amount          Decimal?  @db.Decimal(20, 8)
+  minter_price           Decimal?  @db.Decimal(20, 8)
+  usd_price              Decimal?  @db.Decimal(20, 8)
+  update_time            DateTime? @db.Timestamp(6)
+  create_time            DateTime? @db.Timestamp(6)
+  category               String?   @db.VarChar(32)
+  vertical               String?   @db.VarChar(32)
+  token                  String?   @db.VarChar(32)
+  stage                  String?   @db.VarChar(32)
+  market_cap             Decimal?  @db.Decimal(20, 8)
+  total_devices          Int?
+  avg_device_price       Decimal?  @db.Decimal(20, 8)
+  miner_invested_capital Decimal?  @db.Decimal(20, 8)
+  days_to_breakeven      Decimal?  @db.Decimal(20, 8)
+  w3sbtream_verified     Boolean?
+
+  @@schema("metrics")
+}
+
+model project_list {
+  id                 Int       @id @default(autoincrement())
+  name               String?   @unique @db.VarChar(32)
+  mrr                Decimal?  @db.Decimal(20, 8)
+  break_even         Decimal?  @db.Decimal(20, 8)
+  update_time        DateTime? @db.Timestamp(6)
+  create_time        DateTime? @db.Timestamp(6)
+  token_price        Decimal?  @db.Decimal(20, 8)
+  vertical           String?   @db.VarChar(32)
+  token              String?   @db.VarChar(32)
+  stage              String?   @db.VarChar(32)
+  market_cap         Decimal?  @db.Decimal(20, 8)
+  w3sbtream_verified Boolean?
+  data               Json?
+
+  @@schema("metrics")
+}
+
+model project_list_mv {
+  project_id String @id @db.VarChar(128)
+  body       Json?
+
+  @@schema("metrics")
+}
+
+model sync_lark_bitable {
+  id         Int       @id(map: "sync_project_config_pkey") @default(autoincrement())
+  url        String?   @db.VarChar(128)
+  name       String?   @unique(map: "sync_lark_bitable_unique") @db.VarChar(64)
+  data       Json?
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+
+  @@schema("metrics")
+}
+
+model token {
+  id          Int       @id @default(autoincrement())
+  name        String?   @unique(map: "token_name") @db.VarChar(32)
+  data        Json?
+  created_at  DateTime? @db.Timestamp(6)
+  updated_at  DateTime? @db.Timestamp(6)
+  social      Json?
+  description String?
+
+  @@schema("metrics")
+}
+
+model api_key {
+  id         Int      @id @default(autoincrement())
+  name       String
+  key        String
+  creatorId  String
+  teamId     Int
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+
+  @@schema("public")
+}
+
+model text_widget {
+  id          Int      @id @default(autoincrement())
+  dashboardId Int
+  content     String
+  teamId      Int
+  creatorId   String
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  @@schema("public")
+}
