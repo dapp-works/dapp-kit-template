@@ -1,9 +1,9 @@
 import { NextSeo } from 'next-seo';
 import { observer } from 'mobx-react-lite';
-import { cn } from '@/dappkit/lib/utils';
-import { PageStore } from '@/dappkit/module/Core/Page';
-import RootStore from '@/dappkit/store/root';
-import { HeaderStore } from '@/dappkit/module/Layout/header';
+// import { cn } from '@dappworks/kit/lib/utils';
+import { PageStore } from '@dappworks/kit/module/Core/Page';
+import RootStore from '@dappworks/kit/store/root';
+import { HeaderStore } from '@dappworks/kit/module/Layout/header';
 
 type ContainerProps = {
   children: React.ReactNode;
@@ -37,9 +37,9 @@ function Container(props: ContainerProps) {
       />
       <div>
         <headerStore.Header />
-        <main id="skip" className={cn('p-4 lg:p-4', className)}>
+        {/* <main id="skip" className={cn('p-4 lg:p-4', className)}>
           {children}
-        </main>
+        </main> */}
       </div>
     </>
   );
