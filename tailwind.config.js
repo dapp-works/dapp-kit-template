@@ -1,10 +1,9 @@
-const { fontFamily } = require('tailwindcss/defaultTheme');
-
-/** @type {import('tailwindcss').Config} */
+const { nextui } = require("@nextui-org/react");
 
 module.exports = {
   content: [
     './src/**/*.{js,ts,jsx,tsx}',
+    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
     './node_modules/@dappworks/kit/**/*.{js,ts,jsx,tsx}', 
   ],
   darkMode: 'class',
@@ -154,5 +153,25 @@ module.exports = {
       pattern: /^(fill-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
     },
   ],
-  plugins: [require("tailwindcss-animate"), require("@headlessui/tailwindcss")],
+  plugins: [
+  require("tailwindcss-animate"), 
+  require("@headlessui/tailwindcss"), 
+  nextui({
+    prefix: "nextui", // prefix for themes variables
+    addCommonColors: false, // override common colors (e.g. "blue", "green", "pink").
+    defaultTheme: "light", // default theme from the themes object
+    defaultExtendTheme: "light", // default theme to extend on custom themes
+    layout: {}, // common layout tokens (applied to all themes)
+    themes: {
+      light: {
+        layout: {}, // light theme layout tokens
+        colors: {}, // light theme colors
+      },
+      dark: {
+        layout: {}, // dark theme layout tokens
+        colors: {}, // dark theme colors
+      },
+    },
+  })
+]
 };
