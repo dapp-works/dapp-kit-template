@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@dappworks/kit':
-    specifier: ^0.1.29
-    version: 0.1.29(@babel/core@7.22.9)(@ethersproject/abstract-provider@5.7.0)(@ethersproject/abstract-signer@5.7.0)(@ethersproject/bignumber@5.7.0)(@ethersproject/properties@5.7.0)(@nextui-org/react@2.0.8)(@tiptap/core@2.0.4)(@tiptap/pm@2.0.4)(@types/react-dom@18.2.6)(@types/react@18.2.8)(csstype@3.1.2)(eslint@8.44.0)(localforage@1.10.0)(monaco-editor@0.40.0)(prisma@4.16.2)(prop-types@15.8.1)(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.6)(tailwindcss@3.3.2)(typescript@4.9.5)(webpack@5.88.2)
+    specifier: ^0.1.30
+    version: 0.1.30(@babel/core@7.22.9)(@ethersproject/abstract-provider@5.7.0)(@ethersproject/abstract-signer@5.7.0)(@ethersproject/bignumber@5.7.0)(@ethersproject/properties@5.7.0)(@nextui-org/react@2.0.8)(@tiptap/core@2.0.4)(@tiptap/pm@2.0.4)(@types/react-dom@18.2.6)(@types/react@18.2.8)(csstype@3.1.2)(eslint@8.44.0)(localforage@1.10.0)(monaco-editor@0.40.0)(prisma@4.16.2)(prop-types@15.8.1)(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.6)(tailwindcss@3.3.2)(typescript@4.9.5)(webpack@5.88.2)
   '@isaacs/ttlcache':
     specifier: ^1.4.0
     version: registry.npmmirror.com/@isaacs/ttlcache@1.4.1
@@ -1712,8 +1712,8 @@ packages:
       postcss-selector-parser: 6.0.13
     dev: true
 
-  /@dappworks/kit@0.1.29(@babel/core@7.22.9)(@ethersproject/abstract-provider@5.7.0)(@ethersproject/abstract-signer@5.7.0)(@ethersproject/bignumber@5.7.0)(@ethersproject/properties@5.7.0)(@nextui-org/react@2.0.8)(@tiptap/core@2.0.4)(@tiptap/pm@2.0.4)(@types/react-dom@18.2.6)(@types/react@18.2.8)(csstype@3.1.2)(eslint@8.44.0)(localforage@1.10.0)(monaco-editor@0.40.0)(prisma@4.16.2)(prop-types@15.8.1)(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.6)(tailwindcss@3.3.2)(typescript@4.9.5)(webpack@5.88.2):
-    resolution: {integrity: sha512-nY4EOswUAH62InwNmDvKLz35BbXa9e2hQ6PU1jEK/kfjJhjSLCwhywM2AYqXnCfS9qqCzxx7sIq6s1nl4qHC8w==}
+  /@dappworks/kit@0.1.30(@babel/core@7.22.9)(@ethersproject/abstract-provider@5.7.0)(@ethersproject/abstract-signer@5.7.0)(@ethersproject/bignumber@5.7.0)(@ethersproject/properties@5.7.0)(@nextui-org/react@2.0.8)(@tiptap/core@2.0.4)(@tiptap/pm@2.0.4)(@types/react-dom@18.2.6)(@types/react@18.2.8)(csstype@3.1.2)(eslint@8.44.0)(localforage@1.10.0)(monaco-editor@0.40.0)(prisma@4.16.2)(prop-types@15.8.1)(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.6)(tailwindcss@3.3.2)(typescript@4.9.5)(webpack@5.88.2):
+    resolution: {integrity: sha512-Ui8tppQGpQEx9bfcE7efJJ2dgwS9+hLAA5mbms0ae3/o95EFvsOEm8GDljv28dp16qwgFtDOy1uteMmip5lMBA==}
     peerDependencies:
       '@nextui-org/react': ^2.0.1
     dependencies:

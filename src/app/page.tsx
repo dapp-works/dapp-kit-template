@@ -9,7 +9,6 @@ export default function HomePage() {
   // const headerStore = RootStore.Get(HeaderStore);
   return (
     <main className="">
-      <Layout />
       <Button>123</Button>
     </main>
   );
