@@ -6,7 +6,7 @@ import '../../store';
 import "../../styles/globals.css"
 import { signIn } from 'next-auth/react';
 
-export const Layout = observer(({
+export const LayoutClient = observer(({
   children,
 }: {
   children: React.ReactNode

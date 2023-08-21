@@ -16,6 +16,7 @@
     "@blocknote/react": "^0.8.2",
     "@ducanh2912/next-pwa": "^9.5.0",
     "@dappworks/kit": "^0.1.30",
+    "@dappworks/form": "^0.1.31",
     "@isaacs/ttlcache": "^1.4.0",
     "@monaco-editor/react": "^4.5.1",
     "@prisma/client": "^4.15.0",
