@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@dappworks/form':
+    specifier: ^0.1.31
+    version: 0.1.31(@babel/core@7.22.9)(@ethersproject/abstract-provider@5.7.0)(@ethersproject/abstract-signer@5.7.0)(@ethersproject/bignumber@5.7.0)(@ethersproject/properties@5.7.0)(@nextui-org/react@2.0.8)(@tiptap/core@2.0.4)(@tiptap/pm@2.0.4)(@types/react-dom@18.2.6)(@types/react@18.2.8)(csstype@3.1.2)(eslint@8.44.0)(localforage@1.10.0)(monaco-editor@0.40.0)(prisma@4.16.2)(prop-types@15.8.1)(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.6)(tailwindcss@3.3.2)(typescript@4.9.5)(webpack@5.88.2)
   '@dappworks/kit':
     specifier: ^0.1.30
     version: 0.1.30(@babel/core@7.22.9)(@ethersproject/abstract-provider@5.7.0)(@ethersproject/abstract-signer@5.7.0)(@ethersproject/bignumber@5.7.0)(@ethersproject/properties@5.7.0)(@nextui-org/react@2.0.8)(@tiptap/core@2.0.4)(@tiptap/pm@2.0.4)(@types/react-dom@18.2.6)(@types/react@18.2.8)(csstype@3.1.2)(eslint@8.44.0)(localforage@1.10.0)(monaco-editor@0.40.0)(prisma@4.16.2)(prop-types@15.8.1)(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.6)(tailwindcss@3.3.2)(typescript@4.9.5)(webpack@5.88.2)
@@ -1537,13 +1540,6 @@ packages:
     resolution: {integrity: sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA==}
     dev: false
 
-  /@babel/runtime@7.22.5:
-    resolution: {integrity: sha512-ecjvYlnAaZ/KVneE/OdKYBYfgXV3Ptu6zQWmgEF7vwKhQnvVS6bjMD2XYgj+SNvQ1GfK/pjgokfPkC/2CO8CuA==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      regenerator-runtime: 0.13.11
-    dev: false
-
   /@babel/runtime@7.22.6:
     resolution: {integrity: sha512-wDb5pWm4WDdF6LFUde3Jl8WzPA+3ZbxYqkC6xAXuD3irdEHN1k0NfTRrJD8ZD378SJ61miMLCqIOXYhd8x+AJQ==}
     engines: {node: '>=6.9.0'}
@@ -1711,6 +1707,131 @@ packages:
     dependencies:
       postcss-selector-parser: 6.0.13
     dev: true
+
+  /@dappworks/form@0.1.31(@babel/core@7.22.9)(@ethersproject/abstract-provider@5.7.0)(@ethersproject/abstract-signer@5.7.0)(@ethersproject/bignumber@5.7.0)(@ethersproject/properties@5.7.0)(@nextui-org/react@2.0.8)(@tiptap/core@2.0.4)(@tiptap/pm@2.0.4)(@types/react-dom@18.2.6)(@types/react@18.2.8)(csstype@3.1.2)(eslint@8.44.0)(localforage@1.10.0)(monaco-editor@0.40.0)(prisma@4.16.2)(prop-types@15.8.1)(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.6)(tailwindcss@3.3.2)(typescript@4.9.5)(webpack@5.88.2):
+    resolution: {integrity: sha512-mm2PLrvJLZiKWGofnjKS1SEby1Lq8Jeb4mEavfEYLkzj1ZZXwkBVFtHAtGe+bEDBageF0wWgsdGCRVZStBooPA==}
+    peerDependencies:
+      '@nextui-org/react': ^2.0.1
+    dependencies:
+      '@blocknote/core': 0.8.2(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.6)
+      '@blocknote/react': 0.8.2(@tiptap/core@2.0.4)(@tiptap/pm@2.0.4)(@types/react@18.2.8)(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.6)(react-dom@18.2.0)(react@18.2.0)
+      '@dappworks/kit': 0.1.30(@babel/core@7.22.9)(@ethersproject/abstract-provider@5.7.0)(@ethersproject/abstract-signer@5.7.0)(@ethersproject/bignumber@5.7.0)(@ethersproject/properties@5.7.0)(@nextui-org/react@2.0.8)(@tiptap/core@2.0.4)(@tiptap/pm@2.0.4)(@types/react-dom@18.2.6)(@types/react@18.2.8)(csstype@3.1.2)(eslint@8.44.0)(localforage@1.10.0)(monaco-editor@0.40.0)(prisma@4.16.2)(prop-types@15.8.1)(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.6)(tailwindcss@3.3.2)(typescript@4.9.5)(webpack@5.88.2)
+      '@isaacs/ttlcache': 1.4.1
+      '@monaco-editor/react': 4.5.1(monaco-editor@0.40.0)(react-dom@18.2.0)(react@18.2.0)
+      '@nextui-org/react': 2.0.8(@types/react@18.2.8)(framer-motion@10.15.1)(react-dom@18.2.0)(react@18.2.0)(tailwindcss@3.3.2)
+      '@prisma/client': 4.16.2(prisma@4.16.2)
+      '@radix-ui/react-collapsible': 1.0.3(@types/react-dom@18.2.6)(@types/react@18.2.8)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-dialog': 1.0.4(@types/react-dom@18.2.6)(@types/react@18.2.8)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-dropdown-menu': 2.0.5(@types/react-dom@18.2.6)(@types/react@18.2.8)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-icons': 1.3.0(react@18.2.0)
+      '@radix-ui/react-select': 1.2.2(@types/react-dom@18.2.6)(@types/react@18.2.8)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-slot': 1.0.2(@types/react@18.2.8)(react@18.2.0)
+      '@radix-ui/react-tabs': 1.0.4(@types/react-dom@18.2.6)(@types/react@18.2.8)(react-dom@18.2.0)(react@18.2.0)
+      '@rjsf/core': 5.9.0(@rjsf/utils@5.9.0)(react@18.2.0)
+      '@rjsf/utils': 5.9.0(react@18.2.0)
+      '@rjsf/validator-ajv6': 5.9.0(@rjsf/utils@5.9.0)
+      '@tanstack/react-query': 4.29.19(react-dom@18.2.0)(react@18.2.0)
+      '@thirdweb-dev/chains': 0.1.41
+      '@thirdweb-dev/wallets': 1.1.8(@ethersproject/abstract-provider@5.7.0)(@ethersproject/abstract-signer@5.7.0)(@ethersproject/bignumber@5.7.0)(@ethersproject/properties@5.7.0)(ethers@5.7.2)(localforage@1.10.0)(react@18.2.0)(typescript@4.9.5)
+      '@tremor/react': 3.4.1(prop-types@15.8.1)(react-dom@18.2.0)(react@18.2.0)(tailwindcss@3.3.2)
+      '@trpc/client': 10.33.1(@trpc/server@10.33.1)
+      '@trpc/next': 10.33.1(@tanstack/react-query@4.29.19)(@trpc/client@10.33.1)(@trpc/react-query@10.33.1)(@trpc/server@10.33.1)(next@13.4.8)(react-dom@18.2.0)(react@18.2.0)
+      '@trpc/react-query': 10.33.1(@tanstack/react-query@4.29.19)(@trpc/client@10.33.1)(@trpc/server@10.33.1)(react-dom@18.2.0)(react@18.2.0)
+      '@trpc/server': 10.33.1
+      axios: 1.4.0
+      bignumber.js: 9.1.1
+      class-variance-authority: 0.6.1
+      clickhouse: 2.6.0
+      clsx: 1.2.1
+      copy-to-clipboard: 3.3.3
+      dataloader: 2.2.2
+      date-fns: 2.30.0
+      dayjs: 1.11.9
+      debounce-promise: 3.1.2
+      ethers: 5.7.2
+      fast-json-patch: 3.1.1
+      json-format: 1.0.1
+      json-schema-to-ts: 2.9.1
+      jsonwebtoken: 9.0.0
+      lodash: 4.17.21
+      lucide-react: 0.262.0(react@18.2.0)
+      maplibre-gl: 3.2.1
+      mobx: 6.9.0
+      mobx-react-lite: 3.4.3(mobx@6.9.0)(react-dom@18.2.0)(react@18.2.0)
+      next: 13.4.8(@babel/core@7.22.9)(react-dom@18.2.0)(react@18.2.0)
+      next-auth: 4.22.1(next@13.4.8)(react-dom@18.2.0)(react@18.2.0)
+      next-seo: 6.1.0(next@13.4.8)(react-dom@18.2.0)(react@18.2.0)
+      next-themes: 0.2.1(next@13.4.8)(react-dom@18.2.0)(react@18.2.0)
+      node-sql-parser: 4.7.0
+      nprogress: 0.2.0
+      numeral: 2.0.6
+      react: 18.2.0
+      react-dev-inspector: 1.8.6(eslint@8.44.0)(react@18.2.0)(typescript@4.9.5)(webpack@5.88.2)
+      react-dom: 18.2.0(react@18.2.0)
+      react-draggable: 4.4.5(react-dom@18.2.0)(react@18.2.0)
+      react-grid-layout: 1.3.4(react-dom@18.2.0)(react@18.2.0)
+      react-hot-toast: 2.4.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0)
+      react-hotkeys-hook: 4.4.1(react-dom@18.2.0)(react@18.2.0)
+      react-map-gl: 7.1.3(maplibre-gl@3.2.1)(react-dom@18.2.0)(react@18.2.0)
+      react-select: 5.7.3(@types/react@18.2.8)(react-dom@18.2.0)(react@18.2.0)
+      siwe: 2.1.4(ethers@5.7.2)
+      styled-components: 6.0.5(react-dom@18.2.0)(react@18.2.0)
+      superjson: 1.8.1
+      tailwind-merge: 1.13.2
+      typed-emitter: 2.1.0
+      uuid: 9.0.0
+      zod: 3.21.4
+    transitivePeerDependencies:
+      - '@aws-sdk/client-secrets-manager'
+      - '@babel/core'
+      - '@ethersproject/abstract-provider'
+      - '@ethersproject/abstract-signer'
+      - '@ethersproject/bignumber'
+      - '@ethersproject/properties'
+      - '@metaplex-foundation/js'
+      - '@metaplex-foundation/mpl-token-metadata'
+      - '@noble/ed25519'
+      - '@opentelemetry/api'
+      - '@project-serum/anchor'
+      - '@react-native-async-storage/async-storage'
+      - '@solana/spl-token'
+      - '@solana/web3.js'
+      - '@tiptap/core'
+      - '@tiptap/pm'
+      - '@types/react'
+      - '@types/react-dom'
+      - aptos
+      - babel-plugin-macros
+      - babel-plugin-styled-components
+      - bs58
+      - bufferutil
+      - csstype
+      - debug
+      - encoding
+      - eslint
+      - ethers-aws-kms-signer
+      - fibers
+      - localforage
+      - lokijs
+      - mapbox-gl
+      - monaco-editor
+      - nodemailer
+      - prisma
+      - prop-types
+      - prosemirror-model
+      - prosemirror-state
+      - prosemirror-view
+      - react-native
+      - sass
+      - supports-color
+      - tailwindcss
+      - tweetnacl
+      - typescript
+      - utf-8-validate
+      - vue-template-compiler
+      - webpack
+      - zksync-web3
+    dev: false
 
   /@dappworks/kit@0.1.30(@babel/core@7.22.9)(@ethersproject/abstract-provider@5.7.0)(@ethersproject/abstract-signer@5.7.0)(@ethersproject/bignumber@5.7.0)(@ethersproject/properties@5.7.0)(@nextui-org/react@2.0.8)(@tiptap/core@2.0.4)(@tiptap/pm@2.0.4)(@types/react-dom@18.2.6)(@types/react@18.2.8)(csstype@3.1.2)(eslint@8.44.0)(localforage@1.10.0)(monaco-editor@0.40.0)(prisma@4.16.2)(prop-types@15.8.1)(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.6)(tailwindcss@3.3.2)(typescript@4.9.5)(webpack@5.88.2):
     resolution: {integrity: sha512-Ui8tppQGpQEx9bfcE7efJJ2dgwS9+hLAA5mbms0ae3/o95EFvsOEm8GDljv28dp16qwgFtDOy1uteMmip5lMBA==}
@@ -7483,6 +7604,7 @@ packages:
       tsv: 0.2.0
       uuid: 3.4.0
     dev: false
+    bundledDependencies: []
 
   /client-only@0.0.1:
     resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
@@ -11034,6 +11156,16 @@ packages:
       - csstype
     dev: false
 
+  /react-hotkeys-hook@4.4.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-sClBMBioFEgFGYLTWWRKvhxcCx1DRznd+wkFHwQZspnRBkHTgruKIHptlK/U/2DPX8BhHoRGzpMVWUXMmdZlmw==}
+    peerDependencies:
+      react: '>=16.8.1'
+      react-dom: '>=16.8.1'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /react-icons@4.10.1(react@18.2.0):
     resolution: {integrity: sha512-/ngzDP/77tlCfqthiiGNZeYFACw85fUjZtLbedmJ5DTlNDIwETxhwBzdOJ21zj4iJdvc0J3y7yOsX3PpxAJzrw==}
     peerDependencies:
@@ -11354,7 +11486,7 @@ packages:
   /regenerator-transform@0.15.1:
     resolution: {integrity: sha512-knzmNAcuyxV+gQCufkYcvOqX/qIIfHLv0u5x79kRxuGojfYVky1f15TzZEu2Avte8QGepvUNTnLskf8E6X6Vyg==}
     dependencies:
-      '@babel/runtime': 7.22.5
+      '@babel/runtime': 7.22.6
     dev: false
 
   /regexpu-core@5.3.2:
@@ -14056,7 +14188,7 @@ packages:
     version: 3.1.0
     engines: {node: '>=10', npm: '>=6'}
     dependencies:
-      '@babel/runtime': 7.22.5
+      '@babel/runtime': 7.22.6
       cosmiconfig: registry.npmmirror.com/cosmiconfig@7.1.0
       resolve: registry.npmmirror.com/resolve@1.22.2
     dev: false
