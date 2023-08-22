@@ -7,9 +7,9 @@ rootStore.addStores([
   new StoragePlugin(),
   new AsyncStorage(),
   new HeaderStore({
-    UserNav: (props) => {
-      return <WalletConnectButton className={...props.className}></WalletConnectButton>;
-    },
+    // UserNav: (props) => {
+    //   return <WalletConnectButton className={...props.className}></WalletConnectButton>;
+    // },
   }),
   new DevInspectorPlugin({ disabled: process.env.NODE_ENV != 'development' }),
   new ThemePlugin(),
