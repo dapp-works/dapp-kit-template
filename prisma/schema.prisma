@@ -38,6 +38,7 @@ model user {
   email     String
   image     String?
   loginType String
+  role      String?
 
   team_user team_user[]
   @@schema("public")
