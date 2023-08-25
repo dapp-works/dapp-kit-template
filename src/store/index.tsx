@@ -1,20 +1,28 @@
-"use client"
-import { AsyncStorage, DefaultEventMap, DevInspectorPlugin, DevTool, HeaderStore, StoragePlugin, ThemePlugin, WalletConnectButton, rootStore, RootStore, WalletStore } from '@dappworks/kit';
-import { signIn } from 'next-auth/react';
+"use client";
+import { rootStore, Store, AsyncStorage, DevInspectorPlugin, DevTool, HeaderStore, helper, JSONViewPlugin, StoragePlugin, ThemePlugin, WalletConnectButton, } from "@dappworks/kit";
+import { signIn } from "next-auth/react";
+import { Project } from "./project";
 
-rootStore.addStores([
-  new DevTool({ disabled: process.env.NODE_ENV != 'development' }),
-  new StoragePlugin(),
-  new AsyncStorage(),
-  new HeaderStore({
-    // UserNav: (props) => {
-    //   return <WalletConnectButton className={...props.className}></WalletConnectButton>;
-    // },
-  }),
-  new DevInspectorPlugin({ disabled: process.env.NODE_ENV != 'development' }),
-  new ThemePlugin(),
-]);
+export const init = () => {
+  rootStore.addStores([
+    new DevTool({
+      disabled: process.env.NODE_ENV != "development",
+    }),
+    new StoragePlugin(),
+    new AsyncStorage(),
+    new JSONViewPlugin(),
+    new DevInspectorPlugin({ disabled: process.env.NODE_ENV != "development" }),
+    new ThemePlugin(),
+    new Project(),
+  ]);
 
-if (process.env.NODE_ENV == 'development') {
-  rootStore.events.on('*', console.log);
+  if (helper.env.isBrowser()) {
+    if (process.env.NODE_ENV == "development") {
+      rootStore.events.on("*", console.log);
+    }
+
+    rootStore.events.on("next.signIn.github", () => {
+      signIn("github");
+    });
+  }
 }
