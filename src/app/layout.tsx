@@ -18,8 +18,8 @@ async function getData() {
 export async function generateMetadata(): Promise<Metadata> {
   const { project } = await getData()
   return {
-    title: project.title,
-    description: project.description,
+    title: project?.title,
+    description: project?.description,
   }
 }
 
