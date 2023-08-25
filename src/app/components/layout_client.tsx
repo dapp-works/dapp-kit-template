@@ -5,12 +5,17 @@ import { observer } from 'mobx-react-lite';
 import '../../store';
 import "../../styles/globals.css"
 import { signIn } from 'next-auth/react';
+import { useEffect } from "react";
+import { init } from '@/store';
 
 export const LayoutClient = observer(({
   children,
 }: {
   children: React.ReactNode
 }) => {
+  useEffect(() => {
+    init()
+  }, [])
   const headerStore = RootStore.Get(HeaderStore);
   rootStore.events.on('next.signIn.github', () => {
     signIn('github');
