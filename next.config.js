@@ -5,6 +5,13 @@ const withPWA = require("@ducanh2912/next-pwa").default({
 });
 
 
-const nextConfig = {};
+const nextConfig = {
+  //https://www.simicart.com/manifest-generator.html/
+  pwa: {
+    dest: 'public',
+    register: true,
+    runtimeCaching,
+  }
+};
 
 module.exports = withPWA(nextConfig);

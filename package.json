@@ -15,10 +15,10 @@
   "dependencies": {
     "@blocknote/core": "^0.8.2",
     "@blocknote/react": "^0.8.2",
-    "@ducanh2912/next-pwa": "^9.5.0",
     "@dappworks/form": "^0.1.31",
     "@dappworks/jsonview": "^0.1.33",
     "@dappworks/kit": "^0.1.35",
+    "@ducanh2912/next-pwa": "^9.5.0",
     "@isaacs/ttlcache": "^1.4.0",
     "@monaco-editor/react": "^4.5.1",
     "@nextui-org/react": "^2.0.1",

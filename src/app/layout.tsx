@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { LayoutClient } from "./components/layout_client";
 import { TRPCProvider } from "./components/trpc_provider";
+import Head from "next/head";
 
 async function getData() {
   const res = await fetch(`https://dappkit-async-api.deno.dev/project/${process.env.NEXT_PUBLIC_PROJECT_ID}`, {
@@ -28,6 +29,11 @@ export default async function Layout(props: { children: React.ReactNode }) {
   return (
     <TRPCProvider>
       <html lang="en">
+        <Head>
+          <link rel="manifest" href="/manifest.json" />
+          <link rel="apple-touch-icon" href="/icon.png"></link>
+          <meta name="theme-color" content="#fff" />
+        </Head>
         <body>
           <LayoutClient>
             {props.children}

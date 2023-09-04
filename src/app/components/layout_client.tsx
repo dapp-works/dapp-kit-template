@@ -32,7 +32,7 @@ export const LayoutClient = observer(({
   const ValueFromAsyncStorage = StoragePlugin.Get({ key: 'test.ValueFromAsyncStorage', value: '123', engine: StoragePlugin.engines.asyncStorage });
 
   return (
-    <AppProvider>
+    <AppProvider errorBoundaryFallback={<>Error!</>}>
       <headerStore.Header />
       {children}
     </AppProvider>
