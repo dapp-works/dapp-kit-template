@@ -5,12 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@blocknote/core':
-    specifier: ^0.8.2
-    version: 0.8.2(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.7)
-  '@blocknote/react':
-    specifier: ^0.8.2
-    version: 0.8.2(@tiptap/core@2.1.7)(@tiptap/pm@2.1.7)(@types/react@18.2.8)(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.7)(react-dom@18.2.0)(react@18.2.0)
   '@dappworks/form':
     specifier: ^0.1.31
     version: 0.1.31(@babel/core@7.22.11)(@ethersproject/abstract-provider@5.7.0)(@ethersproject/abstract-signer@5.7.0)(@ethersproject/bignumber@5.7.0)(@ethersproject/properties@5.7.0)(@nextui-org/react@2.0.1)(@tiptap/core@2.1.7)(@tiptap/pm@2.1.7)(@types/react-dom@18.2.4)(@types/react@18.2.8)(csstype@3.1.2)(eslint@8.42.0)(localforage@1.10.0)(monaco-editor@0.41.0)(prisma@4.16.2)(prop-types@15.8.1)(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.31.7)(tailwindcss@3.3.2)(typescript@4.9.5)(webpack@5.88.2)
@@ -8626,6 +8620,7 @@ packages:
       tsv: 0.2.0
       uuid: 3.4.0
     dev: false
+    bundledDependencies: []
 
   /client-only@0.0.1:
     resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
