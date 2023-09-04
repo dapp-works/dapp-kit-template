@@ -13,7 +13,6 @@
     "postinstall": "npm run gen"
   },
   "dependencies": {
-    "@dappworks/form": "^0.1.31",
     "@dappworks/jsonview": "^0.1.33",
     "@dappworks/kit": "^0.1.35",
     "@ducanh2912/next-pwa": "^9.5.0",
