@@ -7,6 +7,7 @@ import "../../styles/globals.css"
 import { signIn } from 'next-auth/react';
 import { useEffect } from "react";
 import { init } from '@/store';
+import { TRPCProvider } from './trpc_provider';
 
 export const LayoutClient = observer(({
   children,
@@ -32,9 +33,9 @@ export const LayoutClient = observer(({
   const ValueFromAsyncStorage = StoragePlugin.Get({ key: 'test.ValueFromAsyncStorage', value: '123', engine: StoragePlugin.engines.asyncStorage });
 
   return (
-    <AppProvider>
+    <AppProvider errorBoundaryFallback={<div>Error!</div>}>
       <headerStore.Header />
-      {children}
+      <TRPCProvider>{children}</TRPCProvider>
     </AppProvider>
   );
 });
