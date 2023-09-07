@@ -30,10 +30,13 @@ const generateAppDirEntry = (entry) => {
 const nextConfig = {
   reactStrictMode: true,
   webpack: (config) => {
-    const entry = generateAppDirEntry(config.entry);
-    config.entry = () => entry;
-
-    return config;
+    if(process.env.NODE_ENV === 'production'){
+      const entry = generateAppDirEntry(config.entry);
+      config.entry = () => entry;
+      return config;
+    }else{
+      return config 
+    }
   },
 };
 
