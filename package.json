@@ -17,7 +17,7 @@
     "@dappworks/kit": "^0.1.35",
     "@isaacs/ttlcache": "^1.4.0",
     "@monaco-editor/react": "^4.5.1",
-    "@nextui-org/react": "^2.0.1",
+    "@nextui-org/react": "^2.1.10",
     "@nextui-org/theme": "^2.0.1",
     "@prisma/client": "^4.15.0",
     "@tanstack/react-query": "^4.29.19",
