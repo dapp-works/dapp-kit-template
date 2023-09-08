@@ -1,7 +1,7 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink, loggerLink } from "@trpc/client";
+import { createTRPCProxyClient, httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import React, { useState } from "react";
 import superjson from "superjson";
@@ -31,6 +31,20 @@ function getBaseUrl() {
   // assume localhost
   return `http://localhost:${process.env.PORT ?? 3000}`;
 }
+
+export const api = createTRPCProxyClient<AppRouter>({
+  links: [
+    httpBatchLink({
+      url: `${getBaseUrl()}/api/trpc`,
+      // headers() {
+      //   return {
+      //     authorization: rootStore.get(UserStore).token ? `Bearer ${rootStore.get(UserStore).token}` : undefined,
+      //   };
+      // },
+    }),
+  ],
+  transformer: superjson,
+});
 
 export function TRPCProvider(props: { children: React.ReactNode }) {
   const url = `${getBaseUrl()}/api/trpc`;

@@ -1,6 +1,7 @@
 'use client';
 import { JSONMetricsView, JSONSchemaTableState, JSONTable, PaginationState } from "@dappworks/jsonview"
-import { trpc } from "./components/trpc_provider";
+import { api, trpc } from "./components/trpc_provider";
+import { useEffect } from "react";
 
 const table = new JSONSchemaTableState({
   columns: [{
@@ -23,9 +24,13 @@ const table = new JSONSchemaTableState({
 })
 
 export default function HomePage() {
-  // let { data: users, isLoading, isFetching } = trpc.user.isSuperAdmin.useQuery({
-  //   userId: '1',
-  // });
+  useEffect(() => {
+    api.user.isSuperAdmin.query({
+      userId: '1',
+    }).then(res => {
+      console.log(res,'xxx')
+    })
+  }, [])
   // console.log(users);
   return (
     <main className="p-10">
