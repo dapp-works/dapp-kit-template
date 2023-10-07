@@ -2,8 +2,8 @@
 
 import { AppProvider, HeaderStore, RootStore, rootStore, StoragePlugin, WalletStore } from '@dappworks/kit';
 import { observer } from 'mobx-react-lite';
-import '../../store';
-import "../../styles/globals.css"
+import '../store';
+import "../styles/globals.css"
 import { signIn } from 'next-auth/react';
 import { useEffect } from "react";
 import { init } from '@/store';
@@ -33,7 +33,7 @@ export const LayoutClient = observer(({
   const ValueFromAsyncStorage = StoragePlugin.Get({ key: 'test.ValueFromAsyncStorage', value: '123', engine: StoragePlugin.engines.asyncStorage });
 
   return (
-    <AppProvider errorBoundaryFallback={<div>Error!</div>}>
+    <AppProvider >
       <headerStore.Header />
       <TRPCProvider>{children}</TRPCProvider>
     </AppProvider>

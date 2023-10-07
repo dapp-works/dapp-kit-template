@@ -1,7 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { rootStore, Store, HeaderStore, helper, JSONViewPlugin, StoragePlugin, } from "@dappworks/kit";
-import { signIn } from "next-auth/react";
+import { rootStore, Store, HeaderStore, helper, StoragePlugin, } from "@dappworks/kit";
 
 
 export class Project implements Store {
@@ -11,18 +10,6 @@ export class Project implements Store {
   description = StoragePlugin.Get({ key: "project.description", value: "This is dapp kit template project", engine: StoragePlugin.engines.asyncStorage })
   script = StoragePlugin.Get({ key: "project.script", value: "console.log('from script')", engine: StoragePlugin.engines.asyncStorage })
   body = StoragePlugin.Get({ key: "project.body", value: "", engine: StoragePlugin.engines.asyncStorage })
-  
-  // slots = {
-  //   Logo: {
-  //     ...HeaderStore.slots.Logo,
-  //     render: () => {
-  //       return <div className="flex items-center">
-  //         <div className="text-lg font-bold">Custom Logo in store/project/slots</div>
-  //       </div>
-  //     }
-  //   }
-  // }
-  
   static Copy = observer(({ text, className, ...props }: { [key: string]: any }) => {
     const copied = StoragePlugin.Get({ key: "copied", defaultValue: false })
     return (<div className={"flex items-center justify-center w-8 h-8 rounded-lg p-1 hover:bg-gray-300"} onClick={(e) => {

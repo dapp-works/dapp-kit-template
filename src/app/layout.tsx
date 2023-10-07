@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { LayoutClient } from "./components/layout_client";
-import { TRPCProvider } from "./components/trpc_provider";
+import { LayoutClient } from "@/components/layout_client";
+import { TRPCProvider } from "@/components/trpc_provider";
 
 async function getData() {
   const res = await fetch(`https://dappkit-async-api.deno.dev/project/${process.env.NEXT_PUBLIC_PROJECT_ID}`, {

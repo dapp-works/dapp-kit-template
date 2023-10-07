@@ -2,6 +2,11 @@
   "name": "metrics-center",
   "version": "0.1.0",
   "private": true,
+  "browser": {
+    "fs": false,
+    "os": false,
+    "path": false
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -14,8 +19,8 @@
     "postinstall": "npm run gen"
   },
   "dependencies": {
-    "@dappworks/jsonview": "^0.1.33",
-    "@dappworks/kit": "^0.1.35",
+    "@dappworks/jsonview": "0.1.43",
+    "@dappworks/kit": "0.1.53",
     "@isaacs/ttlcache": "^1.4.0",
     "@monaco-editor/react": "^4.5.1",
     "@next/bundle-analyzer": "^13.4.19",
