@@ -1,22 +1,24 @@
-"use client"
+'use client';
 
-import { observer, useLocalObservable } from "mobx-react-lite";
-import dynamic from "next/dynamic";
-const JSONTable = dynamic(() => import('@dappworks/jsonview').then(t => t.JSONTable), { ssr: false })
+import { observer, useLocalObservable } from 'mobx-react-lite';
+const JSONTable = dynamic(() => import('@dappworks/kit/form').then((t) => t.JSONTable), { ssr: false });
+import dynamic from 'next/dynamic';
 
-const Client = observer(({ data }: any) => {
-  return <JSONTable
-    rowKey='id'
-    dataSource={[{
-      name: 'test',
-      age: '123'
-    }]}
-    columnOptions={{
-      name: {
-        label: "name"
-      }
-    }}
-  />
-})
-
-export default Client;
+export default observer(({ data }: any) => {
+  return (
+    <JSONTable
+      rowKey="id"
+      dataSource={[
+        {
+          name: 'test',
+          age: '123',
+        },
+      ]}
+      columnOptions={{
+        name: {
+          label: 'name',
+        },
+      }}
+    />
+  );
+});
