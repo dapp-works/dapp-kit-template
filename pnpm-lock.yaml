@@ -6,10 +6,10 @@ settings:
 
 dependencies:
   '@dappworks/kit':
-    specifier: 0.3.5
-    version: 0.3.5(@blocknote/core@0.9.6)(@blocknote/react@0.9.6)(@monaco-editor/react@4.6.0)(@rjsf/core@5.13.3)(@rjsf/utils@5.13.3)(@rjsf/validator-ajv6@5.13.3)(@tremor/react@3.10.1)(axios@1.6.0)(bignumber.js@9.1.2)(lodash@4.17.21)(mobx-react-lite@3.4.3)(mobx@6.10.2)(next-auth@4.24.4)(react-dom@18.2.0)(react-draggable@4.4.6)(react-hot-toast@2.4.1)(react@18.2.0)
+    specifier: 0.3.11
+    version: 0.3.11(@blocknote/core@0.9.6)(@blocknote/react@0.9.6)(@monaco-editor/react@4.6.0)(@rjsf/core@5.13.3)(@rjsf/utils@5.13.3)(@rjsf/validator-ajv6@5.13.3)(@tremor/react@3.10.1)(axios@1.6.0)(bignumber.js@9.1.2)(lodash@4.17.21)(mobx-react-lite@3.4.3)(mobx@6.10.2)(next-auth@4.24.4)(react-dom@18.2.0)(react-draggable@4.4.6)(react-hot-toast@2.4.1)(react@18.2.0)
   '@isaacs/ttlcache':
-    specifier: ^1.4.0
+    specifier: ^1.4.1
     version: 1.4.1
   '@monaco-editor/react':
     specifier: ^4.5.1
@@ -489,8 +489,8 @@ packages:
       postcss-selector-parser: 6.0.13
     dev: true
 
-  /@dappworks/kit@0.3.5(@blocknote/core@0.9.6)(@blocknote/react@0.9.6)(@monaco-editor/react@4.6.0)(@rjsf/core@5.13.3)(@rjsf/utils@5.13.3)(@rjsf/validator-ajv6@5.13.3)(@tremor/react@3.10.1)(axios@1.6.0)(bignumber.js@9.1.2)(lodash@4.17.21)(mobx-react-lite@3.4.3)(mobx@6.10.2)(next-auth@4.24.4)(react-dom@18.2.0)(react-draggable@4.4.6)(react-hot-toast@2.4.1)(react@18.2.0):
-    resolution: {integrity: sha512-Sg1CtFtU1ctXOr/C6WHds72zFf8JtG0mACYShL6NV5MyjxgWjRm+XsnZx7oSeioPQU183St8moLMvRx+HVOFRA==}
+  /@dappworks/kit@0.3.11(@blocknote/core@0.9.6)(@blocknote/react@0.9.6)(@monaco-editor/react@4.6.0)(@rjsf/core@5.13.3)(@rjsf/utils@5.13.3)(@rjsf/validator-ajv6@5.13.3)(@tremor/react@3.10.1)(axios@1.6.0)(bignumber.js@9.1.2)(lodash@4.17.21)(mobx-react-lite@3.4.3)(mobx@6.10.2)(next-auth@4.24.4)(react-dom@18.2.0)(react-draggable@4.4.6)(react-hot-toast@2.4.1)(react@18.2.0):
+    resolution: {integrity: sha512-8in08r0zJtMRALp4pJN3c8fpAXiAs+OYB3inlI0ZwoudG7cPv1DfXXFgd3GX4zomK5S8G9Z4aiC1E5Xje0uLTg==}
     peerDependencies:
       '@blocknote/core': '>=0.8.2'
       '@blocknote/react': '>=0.8.2'

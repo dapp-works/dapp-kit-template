@@ -19,7 +19,8 @@
     "postinstall": "npm run gen"
   },
   "dependencies": {
-    "@dappworks/kit": "0.3.5",
+    "@dappworks/kit": "0.3.11",
+    "@isaacs/ttlcache": "^1.4.1",
     "@monaco-editor/react": "^4.5.1",
     "@next/bundle-analyzer": "^13.4.19",
     "@nextui-org/react": "^2.1.13",
