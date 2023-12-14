@@ -1,61 +1,93 @@
 import React from 'react';
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, NavbarMenuItem, NavbarMenuToggle, NavbarMenu } from '@nextui-org/react';
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuItem, NavbarMenuToggle, Image, Avatar, Button, Divider, NavbarMenu, PopoverTrigger, PopoverContent, Popover } from '@nextui-org/react';
+import { RootStore, rootStore } from '@dappworks/kit';
+import { UserStore } from '@/store/user';
+import { observer } from 'mobx-react-lite';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Project } from '@/store/project';
+import { _ } from '@/lib/lodash'
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
-export default function AppNavbar() {
+const AppNavbar = observer(() => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
-  const menuItems = ['Profile', 'Dashboard', 'Activity', 'Analytics', 'System', 'Deployments', 'My Settings', 'Team Settings', 'Help & Feedback', 'Log Out'];
+  const userStore = RootStore.Get(UserStore);
+  const project = RootStore.Get(Project);
+  const router = useRouter();
+  userStore.use();
+  const menuItems = [];
   // const wallet = RootStore.Get(WalletStore)
   // wallet.use()
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen}>
-      <NavbarContent>
+    <Navbar maxWidth='full' onMenuOpenChange={setIsMenuOpen} className='bg-background flex justify-unset'>
+      <NavbarContent style={{ flex: 10 }}>
+        <div className='mr-auto hidden sm:block'>Logo</div>
         <NavbarMenuToggle aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} className="sm:hidden" />
-        <NavbarBrand>
-          <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
-            <path
-              clipRule="evenodd"
-              d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
-              fill="currentColor"
-              fillRule="evenodd"
-            />
-          </svg>
-          <p className="font-bold text-inherit">ACME</p>
-        </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Features
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive>
-          <Link href="#" aria-current="page">
-            Customers
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Integrations
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
-      <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
-        </NavbarItem>
-        <NavbarItem>{/* <ConnectWallet theme={'light'} modalSize={'wide'} /> */}</NavbarItem>
-      </NavbarContent>
+
+      <div className='hidden md:flex items-center justify-center gap-4'>
+        <NavbarContent className="sm:flex ml-auto" justify="end">
+          {
+            project.topNavList.map((item, index) => {
+              return (
+                <NavbarItem key={`${item}-${index}`}>
+                  <Link href={item.url} >
+                    {item.title}
+                  </Link>
+                </NavbarItem>
+              )
+            })}
+        </NavbarContent>
+
+        <NavbarContent className='ml-auto'>
+          <NavbarItem className="hidden lg:flex">
+            <ConnectButton />
+            {/* {
+            userStore.isLogin ?
+              <>
+                <Popover placement="bottom" showArrow={true}>
+                  <PopoverTrigger>
+                    <Avatar className="w-8 h-8" src={userStore.image} name={userStore.name} />
+                  </PopoverTrigger>
+                  <PopoverContent className='bg-card'>
+                    <div className="px-1 py-2">
+                      <div className='text-primary text-xl'>{userStore.name}</div>
+                      <div className='mt-3'>{userStore.email}</div>
+                      <Button className='mt-3' color='primary' onClick={e => {
+                        userStore.logout();
+                        router.push('/login');
+                      }}>Logout</Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </> :
+              <Button onClick={e => {
+                console.log('next.signIn.github');
+                rootStore.events.emit('next.signIn.github');
+              }} href="#">Login</Button>
+          } */}
+          </NavbarItem>
+        </NavbarContent>
+      </div>
+
+      <div className='block md:hidden'>
+        <ConnectButton accountStatus={'address'} />
+      </div>
+
+
+
       <NavbarMenu>
-        {menuItems.map((item, index) => (
+        {[...project.topNavList].map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
-            <Link color={index === 2 ? 'primary' : index === menuItems.length - 1 ? 'danger' : 'foreground'} className="w-full" href="#" size="lg">
-              {item}
+            <Link target={item.target} color={index === 2 ? 'primary' : index === menuItems.length - 1 ? 'danger' : 'foreground'} className="w-full" href={item.url as string} >
+              {item.title}
             </Link>
           </NavbarMenuItem>
         ))}
       </NavbarMenu>
     </Navbar>
   );
-}
+})
+
+export default AppNavbar

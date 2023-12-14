@@ -1,0 +1,2400 @@
+schema {
+  query: query_root
+  subscription: subscription_root
+}
+
+"""whether this query should be cached (Hasura Cloud only)"""
+directive @cached(
+  """measured in seconds"""
+  ttl: Int! = 60
+
+  """refresh the cache entry"""
+  refresh: Boolean! = false
+) on QUERY
+
+"""
+Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
+"""
+input Int_comparison_exp {
+  _eq: Int
+  _gt: Int
+  _gte: Int
+  _in: [Int!]
+  _is_null: Boolean
+  _lt: Int
+  _lte: Int
+  _neq: Int
+  _nin: [Int!]
+}
+
+"""
+Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
+"""
+input String_array_comparison_exp {
+  """is the array contained in the given array value"""
+  _contained_in: [String!]
+
+  """does the array contain the given value"""
+  _contains: [String!]
+  _eq: [String!]
+  _gt: [String!]
+  _gte: [String!]
+  _in: [[String!]!]
+  _is_null: Boolean
+  _lt: [String!]
+  _lte: [String!]
+  _neq: [String!]
+  _nin: [[String!]!]
+}
+
+"""
+Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
+"""
+input String_comparison_exp {
+  _eq: String
+  _gt: String
+  _gte: String
+
+  """does the column match the given case-insensitive pattern"""
+  _ilike: String
+  _in: [String!]
+
+  """
+  does the column match the given POSIX regular expression, case insensitive
+  """
+  _iregex: String
+  _is_null: Boolean
+
+  """does the column match the given pattern"""
+  _like: String
+  _lt: String
+  _lte: String
+  _neq: String
+
+  """does the column NOT match the given case-insensitive pattern"""
+  _nilike: String
+  _nin: [String!]
+
+  """
+  does the column NOT match the given POSIX regular expression, case insensitive
+  """
+  _niregex: String
+
+  """does the column NOT match the given pattern"""
+  _nlike: String
+
+  """
+  does the column NOT match the given POSIX regular expression, case sensitive
+  """
+  _nregex: String
+
+  """does the column NOT match the given SQL regular expression"""
+  _nsimilar: String
+
+  """
+  does the column match the given POSIX regular expression, case sensitive
+  """
+  _regex: String
+
+  """does the column match the given SQL regular expression"""
+  _similar: String
+}
+
+"""
+columns and relationships of "banner"
+"""
+type banner {
+  id: Int!
+  image: String!
+  link: String!
+  title: String
+}
+
+"""
+Boolean expression to filter rows from the table "banner". All fields are combined with a logical 'AND'.
+"""
+input banner_bool_exp {
+  _and: [banner_bool_exp!]
+  _not: banner_bool_exp
+  _or: [banner_bool_exp!]
+  id: Int_comparison_exp
+  image: String_comparison_exp
+  link: String_comparison_exp
+  title: String_comparison_exp
+}
+
+"""Ordering options when selecting data from "banner"."""
+input banner_order_by {
+  id: order_by
+  image: order_by
+  link: order_by
+  title: order_by
+}
+
+"""
+select columns of table "banner"
+"""
+enum banner_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  image
+
+  """column name"""
+  link
+
+  """column name"""
+  title
+}
+
+"""
+Streaming cursor of the table "banner"
+"""
+input banner_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: banner_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input banner_stream_cursor_value_input {
+  id: Int
+  image: String
+  link: String
+  title: String
+}
+
+scalar bigint
+
+"""
+Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'.
+"""
+input bigint_comparison_exp {
+  _eq: bigint
+  _gt: bigint
+  _gte: bigint
+  _in: [bigint!]
+  _is_null: Boolean
+  _lt: bigint
+  _lte: bigint
+  _neq: bigint
+  _nin: [bigint!]
+}
+
+scalar bytea
+
+"""
+Boolean expression to compare columns of type "bytea". All fields are combined with logical 'AND'.
+"""
+input bytea_comparison_exp {
+  _eq: bytea
+  _gt: bytea
+  _gte: bytea
+  _in: [bytea!]
+  _is_null: Boolean
+  _lt: bytea
+  _lte: bytea
+  _neq: bytea
+  _nin: [bytea!]
+}
+
+"""
+columns and relationships of "contracts_verified"
+"""
+type contracts_verified {
+  address: String!
+  compiler_evm_version: String!
+  compiler_runs: Int!
+  compiler_type: smallint!
+  compiler_version: String!
+  contract_abi: String!
+  contract_bytecode: String!
+  contract_bytecode_hash: String!
+  contract_name: String!
+  contract_source: String!
+  deployed_bytecode_hash: String!
+  id: bigint!
+  license_type: smallint!
+  optimizer: smallint!
+  verified_time: Int!
+}
+
+"""
+aggregated selection of "contracts_verified"
+"""
+type contracts_verified_aggregate {
+  aggregate: contracts_verified_aggregate_fields
+  nodes: [contracts_verified!]!
+}
+
+"""
+aggregate fields of "contracts_verified"
+"""
+type contracts_verified_aggregate_fields {
+  avg: contracts_verified_avg_fields
+  count(columns: [contracts_verified_select_column!], distinct: Boolean): Int!
+  max: contracts_verified_max_fields
+  min: contracts_verified_min_fields
+  stddev: contracts_verified_stddev_fields
+  stddev_pop: contracts_verified_stddev_pop_fields
+  stddev_samp: contracts_verified_stddev_samp_fields
+  sum: contracts_verified_sum_fields
+  var_pop: contracts_verified_var_pop_fields
+  var_samp: contracts_verified_var_samp_fields
+  variance: contracts_verified_variance_fields
+}
+
+"""aggregate avg on columns"""
+type contracts_verified_avg_fields {
+  compiler_runs: Float
+  compiler_type: Float
+  id: Float
+  license_type: Float
+  optimizer: Float
+  verified_time: Float
+}
+
+"""
+Boolean expression to filter rows from the table "contracts_verified". All fields are combined with a logical 'AND'.
+"""
+input contracts_verified_bool_exp {
+  _and: [contracts_verified_bool_exp!]
+  _not: contracts_verified_bool_exp
+  _or: [contracts_verified_bool_exp!]
+  address: String_comparison_exp
+  compiler_evm_version: String_comparison_exp
+  compiler_runs: Int_comparison_exp
+  compiler_type: smallint_comparison_exp
+  compiler_version: String_comparison_exp
+  contract_abi: String_comparison_exp
+  contract_bytecode: String_comparison_exp
+  contract_bytecode_hash: String_comparison_exp
+  contract_name: String_comparison_exp
+  contract_source: String_comparison_exp
+  deployed_bytecode_hash: String_comparison_exp
+  id: bigint_comparison_exp
+  license_type: smallint_comparison_exp
+  optimizer: smallint_comparison_exp
+  verified_time: Int_comparison_exp
+}
+
+"""aggregate max on columns"""
+type contracts_verified_max_fields {
+  address: String
+  compiler_evm_version: String
+  compiler_runs: Int
+  compiler_type: smallint
+  compiler_version: String
+  contract_abi: String
+  contract_bytecode: String
+  contract_bytecode_hash: String
+  contract_name: String
+  contract_source: String
+  deployed_bytecode_hash: String
+  id: bigint
+  license_type: smallint
+  optimizer: smallint
+  verified_time: Int
+}
+
+"""aggregate min on columns"""
+type contracts_verified_min_fields {
+  address: String
+  compiler_evm_version: String
+  compiler_runs: Int
+  compiler_type: smallint
+  compiler_version: String
+  contract_abi: String
+  contract_bytecode: String
+  contract_bytecode_hash: String
+  contract_name: String
+  contract_source: String
+  deployed_bytecode_hash: String
+  id: bigint
+  license_type: smallint
+  optimizer: smallint
+  verified_time: Int
+}
+
+"""Ordering options when selecting data from "contracts_verified"."""
+input contracts_verified_order_by {
+  address: order_by
+  compiler_evm_version: order_by
+  compiler_runs: order_by
+  compiler_type: order_by
+  compiler_version: order_by
+  contract_abi: order_by
+  contract_bytecode: order_by
+  contract_bytecode_hash: order_by
+  contract_name: order_by
+  contract_source: order_by
+  deployed_bytecode_hash: order_by
+  id: order_by
+  license_type: order_by
+  optimizer: order_by
+  verified_time: order_by
+}
+
+"""
+select columns of table "contracts_verified"
+"""
+enum contracts_verified_select_column {
+  """column name"""
+  address
+
+  """column name"""
+  compiler_evm_version
+
+  """column name"""
+  compiler_runs
+
+  """column name"""
+  compiler_type
+
+  """column name"""
+  compiler_version
+
+  """column name"""
+  contract_abi
+
+  """column name"""
+  contract_bytecode
+
+  """column name"""
+  contract_bytecode_hash
+
+  """column name"""
+  contract_name
+
+  """column name"""
+  contract_source
+
+  """column name"""
+  deployed_bytecode_hash
+
+  """column name"""
+  id
+
+  """column name"""
+  license_type
+
+  """column name"""
+  optimizer
+
+  """column name"""
+  verified_time
+}
+
+"""aggregate stddev on columns"""
+type contracts_verified_stddev_fields {
+  compiler_runs: Float
+  compiler_type: Float
+  id: Float
+  license_type: Float
+  optimizer: Float
+  verified_time: Float
+}
+
+"""aggregate stddev_pop on columns"""
+type contracts_verified_stddev_pop_fields {
+  compiler_runs: Float
+  compiler_type: Float
+  id: Float
+  license_type: Float
+  optimizer: Float
+  verified_time: Float
+}
+
+"""aggregate stddev_samp on columns"""
+type contracts_verified_stddev_samp_fields {
+  compiler_runs: Float
+  compiler_type: Float
+  id: Float
+  license_type: Float
+  optimizer: Float
+  verified_time: Float
+}
+
+"""
+Streaming cursor of the table "contracts_verified"
+"""
+input contracts_verified_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: contracts_verified_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input contracts_verified_stream_cursor_value_input {
+  address: String
+  compiler_evm_version: String
+  compiler_runs: Int
+  compiler_type: smallint
+  compiler_version: String
+  contract_abi: String
+  contract_bytecode: String
+  contract_bytecode_hash: String
+  contract_name: String
+  contract_source: String
+  deployed_bytecode_hash: String
+  id: bigint
+  license_type: smallint
+  optimizer: smallint
+  verified_time: Int
+}
+
+"""aggregate sum on columns"""
+type contracts_verified_sum_fields {
+  compiler_runs: Int
+  compiler_type: smallint
+  id: bigint
+  license_type: smallint
+  optimizer: smallint
+  verified_time: Int
+}
+
+"""aggregate var_pop on columns"""
+type contracts_verified_var_pop_fields {
+  compiler_runs: Float
+  compiler_type: Float
+  id: Float
+  license_type: Float
+  optimizer: Float
+  verified_time: Float
+}
+
+"""aggregate var_samp on columns"""
+type contracts_verified_var_samp_fields {
+  compiler_runs: Float
+  compiler_type: Float
+  id: Float
+  license_type: Float
+  optimizer: Float
+  verified_time: Float
+}
+
+"""aggregate variance on columns"""
+type contracts_verified_variance_fields {
+  compiler_runs: Float
+  compiler_type: Float
+  id: Float
+  license_type: Float
+  optimizer: Float
+  verified_time: Float
+}
+
+"""ordering argument of a cursor"""
+enum cursor_ordering {
+  """ascending ordering of the cursor"""
+  ASC
+
+  """descending ordering of the cursor"""
+  DESC
+}
+
+"""
+columns and relationships of "dapp"
+"""
+type dapp {
+  category: String!
+  id: Int!
+  imageUrl: String
+  title: String!
+  url: String
+}
+
+"""
+Boolean expression to filter rows from the table "dapp". All fields are combined with a logical 'AND'.
+"""
+input dapp_bool_exp {
+  _and: [dapp_bool_exp!]
+  _not: dapp_bool_exp
+  _or: [dapp_bool_exp!]
+  category: String_comparison_exp
+  id: Int_comparison_exp
+  imageUrl: String_comparison_exp
+  title: String_comparison_exp
+  url: String_comparison_exp
+}
+
+"""Ordering options when selecting data from "dapp"."""
+input dapp_order_by {
+  category: order_by
+  id: order_by
+  imageUrl: order_by
+  title: order_by
+  url: order_by
+}
+
+"""
+select columns of table "dapp"
+"""
+enum dapp_select_column {
+  """column name"""
+  category
+
+  """column name"""
+  id
+
+  """column name"""
+  imageUrl
+
+  """column name"""
+  title
+
+  """column name"""
+  url
+}
+
+"""
+Streaming cursor of the table "dapp"
+"""
+input dapp_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: dapp_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input dapp_stream_cursor_value_input {
+  category: String
+  id: Int
+  imageUrl: String
+  title: String
+  url: String
+}
+
+scalar date
+
+"""
+Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'.
+"""
+input date_comparison_exp {
+  _eq: date
+  _gt: date
+  _gte: date
+  _in: [date!]
+  _is_null: Boolean
+  _lt: date
+  _lte: date
+  _neq: date
+  _nin: [date!]
+}
+
+"""
+columns and relationships of "ecosystem"
+"""
+type ecosystem {
+  date: date
+  id: uuid!
+  logo: String!
+  slug: String!
+  status: String!
+  tag: String!
+  telegram: String
+  title: String!
+  twitter: String
+  website: String
+}
+
+"""
+Boolean expression to filter rows from the table "ecosystem". All fields are combined with a logical 'AND'.
+"""
+input ecosystem_bool_exp {
+  _and: [ecosystem_bool_exp!]
+  _not: ecosystem_bool_exp
+  _or: [ecosystem_bool_exp!]
+  date: date_comparison_exp
+  id: uuid_comparison_exp
+  logo: String_comparison_exp
+  slug: String_comparison_exp
+  status: String_comparison_exp
+  tag: String_comparison_exp
+  telegram: String_comparison_exp
+  title: String_comparison_exp
+  twitter: String_comparison_exp
+  website: String_comparison_exp
+}
+
+"""Ordering options when selecting data from "ecosystem"."""
+input ecosystem_order_by {
+  date: order_by
+  id: order_by
+  logo: order_by
+  slug: order_by
+  status: order_by
+  tag: order_by
+  telegram: order_by
+  title: order_by
+  twitter: order_by
+  website: order_by
+}
+
+"""
+select columns of table "ecosystem"
+"""
+enum ecosystem_select_column {
+  """column name"""
+  date
+
+  """column name"""
+  id
+
+  """column name"""
+  logo
+
+  """column name"""
+  slug
+
+  """column name"""
+  status
+
+  """column name"""
+  tag
+
+  """column name"""
+  telegram
+
+  """column name"""
+  title
+
+  """column name"""
+  twitter
+
+  """column name"""
+  website
+}
+
+"""
+Streaming cursor of the table "ecosystem"
+"""
+input ecosystem_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: ecosystem_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input ecosystem_stream_cursor_value_input {
+  date: date
+  id: uuid
+  logo: String
+  slug: String
+  status: String
+  tag: String
+  telegram: String
+  title: String
+  twitter: String
+  website: String
+}
+
+scalar jsonb
+
+input jsonb_cast_exp {
+  String: String_comparison_exp
+}
+
+"""
+Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'.
+"""
+input jsonb_comparison_exp {
+  _cast: jsonb_cast_exp
+
+  """is the column contained in the given json value"""
+  _contained_in: jsonb
+
+  """does the column contain the given json value at the top level"""
+  _contains: jsonb
+  _eq: jsonb
+  _gt: jsonb
+  _gte: jsonb
+
+  """does the string exist as a top-level key in the column"""
+  _has_key: String
+
+  """do all of these strings exist as top-level keys in the column"""
+  _has_keys_all: [String!]
+
+  """do any of these strings exist as top-level keys in the column"""
+  _has_keys_any: [String!]
+  _in: [jsonb!]
+  _is_null: Boolean
+  _lt: jsonb
+  _lte: jsonb
+  _neq: jsonb
+  _nin: [jsonb!]
+}
+
+"""
+columns and relationships of "kv"
+"""
+type kv {
+  key: String!
+  value: String!
+}
+
+"""
+Boolean expression to filter rows from the table "kv". All fields are combined with a logical 'AND'.
+"""
+input kv_bool_exp {
+  _and: [kv_bool_exp!]
+  _not: kv_bool_exp
+  _or: [kv_bool_exp!]
+  key: String_comparison_exp
+  value: String_comparison_exp
+}
+
+"""Ordering options when selecting data from "kv"."""
+input kv_order_by {
+  key: order_by
+  value: order_by
+}
+
+"""
+select columns of table "kv"
+"""
+enum kv_select_column {
+  """column name"""
+  key
+
+  """column name"""
+  value
+}
+
+"""
+Streaming cursor of the table "kv"
+"""
+input kv_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: kv_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input kv_stream_cursor_value_input {
+  key: String
+  value: String
+}
+
+scalar numeric
+
+"""
+Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'.
+"""
+input numeric_comparison_exp {
+  _eq: numeric
+  _gt: numeric
+  _gte: numeric
+  _in: [numeric!]
+  _is_null: Boolean
+  _lt: numeric
+  _lte: numeric
+  _neq: numeric
+  _nin: [numeric!]
+}
+
+"""column ordering options"""
+enum order_by {
+  """in ascending order, nulls last"""
+  asc
+
+  """in ascending order, nulls first"""
+  asc_nulls_first
+
+  """in ascending order, nulls last"""
+  asc_nulls_last
+
+  """in descending order, nulls first"""
+  desc
+
+  """in descending order, nulls first"""
+  desc_nulls_first
+
+  """in descending order, nulls last"""
+  desc_nulls_last
+}
+
+"""
+columns and relationships of "price_history"
+"""
+type price_history {
+  date: date
+  id: Int!
+  price: numeric
+  volume: numeric
+}
+
+"""
+Boolean expression to filter rows from the table "price_history". All fields are combined with a logical 'AND'.
+"""
+input price_history_bool_exp {
+  _and: [price_history_bool_exp!]
+  _not: price_history_bool_exp
+  _or: [price_history_bool_exp!]
+  date: date_comparison_exp
+  id: Int_comparison_exp
+  price: numeric_comparison_exp
+  volume: numeric_comparison_exp
+}
+
+"""Ordering options when selecting data from "price_history"."""
+input price_history_order_by {
+  date: order_by
+  id: order_by
+  price: order_by
+  volume: order_by
+}
+
+"""
+select columns of table "price_history"
+"""
+enum price_history_select_column {
+  """column name"""
+  date
+
+  """column name"""
+  id
+
+  """column name"""
+  price
+
+  """column name"""
+  volume
+}
+
+"""
+Streaming cursor of the table "price_history"
+"""
+input price_history_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: price_history_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input price_history_stream_cursor_value_input {
+  date: date
+  id: Int
+  price: numeric
+  volume: numeric
+}
+
+type query_root {
+  """
+  fetch data from the table: "banner"
+  """
+  banner(
+    """distinct select on columns"""
+    distinct_on: [banner_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [banner_order_by!]
+
+    """filter the rows returned"""
+    where: banner_bool_exp
+  ): [banner!]!
+
+  """fetch data from the table: "banner" using primary key columns"""
+  banner_by_pk(id: Int!): banner
+
+  """
+  fetch data from the table: "contracts_verified"
+  """
+  contracts_verified(
+    """distinct select on columns"""
+    distinct_on: [contracts_verified_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [contracts_verified_order_by!]
+
+    """filter the rows returned"""
+    where: contracts_verified_bool_exp
+  ): [contracts_verified!]!
+
+  """
+  fetch aggregated fields from the table: "contracts_verified"
+  """
+  contracts_verified_aggregate(
+    """distinct select on columns"""
+    distinct_on: [contracts_verified_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [contracts_verified_order_by!]
+
+    """filter the rows returned"""
+    where: contracts_verified_bool_exp
+  ): contracts_verified_aggregate!
+
+  """
+  fetch data from the table: "contracts_verified" using primary key columns
+  """
+  contracts_verified_by_pk(id: bigint!): contracts_verified
+
+  """
+  fetch data from the table: "dapp"
+  """
+  dapp(
+    """distinct select on columns"""
+    distinct_on: [dapp_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [dapp_order_by!]
+
+    """filter the rows returned"""
+    where: dapp_bool_exp
+  ): [dapp!]!
+
+  """fetch data from the table: "dapp" using primary key columns"""
+  dapp_by_pk(id: Int!): dapp
+
+  """
+  fetch data from the table: "ecosystem"
+  """
+  ecosystem(
+    """distinct select on columns"""
+    distinct_on: [ecosystem_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ecosystem_order_by!]
+
+    """filter the rows returned"""
+    where: ecosystem_bool_exp
+  ): [ecosystem!]!
+
+  """fetch data from the table: "ecosystem" using primary key columns"""
+  ecosystem_by_pk(id: uuid!): ecosystem
+
+  """
+  fetch data from the table: "kv"
+  """
+  kv(
+    """distinct select on columns"""
+    distinct_on: [kv_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [kv_order_by!]
+
+    """filter the rows returned"""
+    where: kv_bool_exp
+  ): [kv!]!
+
+  """fetch data from the table: "kv" using primary key columns"""
+  kv_by_pk(key: String!): kv
+
+  """
+  fetch data from the table: "price_history"
+  """
+  price_history(
+    """distinct select on columns"""
+    distinct_on: [price_history_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [price_history_order_by!]
+
+    """filter the rows returned"""
+    where: price_history_bool_exp
+  ): [price_history!]!
+
+  """fetch data from the table: "price_history" using primary key columns"""
+  price_history_by_pk(id: Int!): price_history
+
+  """
+  fetch data from the table: "scription.action"
+  """
+  scription_action(
+    """distinct select on columns"""
+    distinct_on: [scription_action_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scription_action_order_by!]
+
+    """filter the rows returned"""
+    where: scription_action_bool_exp
+  ): [scription_action!]!
+
+  """
+  fetch data from the table: "scription.action" using primary key columns
+  """
+  scription_action_by_pk(id: bigint!): scription_action
+
+  """
+  fetch data from the table: "scription.indexer_height"
+  """
+  scription_indexer_height(
+    """distinct select on columns"""
+    distinct_on: [scription_indexer_height_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scription_indexer_height_order_by!]
+
+    """filter the rows returned"""
+    where: scription_indexer_height_bool_exp
+  ): [scription_indexer_height!]!
+
+  """
+  fetch data from the table: "scription.indexer_height" using primary key columns
+  """
+  scription_indexer_height_by_pk(id: Int!): scription_indexer_height
+
+  """
+  fetch data from the table: "scription.xrc20"
+  """
+  scription_xrc20(
+    """distinct select on columns"""
+    distinct_on: [scription_xrc20_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scription_xrc20_order_by!]
+
+    """filter the rows returned"""
+    where: scription_xrc20_bool_exp
+  ): [scription_xrc20!]!
+
+  """
+  fetch data from the table: "scription.xrc20_action"
+  """
+  scription_xrc20_action(
+    """distinct select on columns"""
+    distinct_on: [scription_xrc20_action_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scription_xrc20_action_order_by!]
+
+    """filter the rows returned"""
+    where: scription_xrc20_action_bool_exp
+  ): [scription_xrc20_action!]!
+
+  """
+  fetch data from the table: "scription.xrc20_action" using primary key columns
+  """
+  scription_xrc20_action_by_pk(id: Int!): scription_xrc20_action
+
+  """fetch data from the table: "scription.xrc20" using primary key columns"""
+  scription_xrc20_by_pk(id: Int!): scription_xrc20
+
+  """
+  fetch data from the table: "scription.xrc20_transfer"
+  """
+  scription_xrc20_transfer(
+    """distinct select on columns"""
+    distinct_on: [scription_xrc20_transfer_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scription_xrc20_transfer_order_by!]
+
+    """filter the rows returned"""
+    where: scription_xrc20_transfer_bool_exp
+  ): [scription_xrc20_transfer!]!
+
+  """
+  fetch data from the table: "scription.xrc20_transfer" using primary key columns
+  """
+  scription_xrc20_transfer_by_pk(id: Int!): scription_xrc20_transfer
+
+  """
+  fetch data from the table: "xrc20"
+  """
+  xrc20(
+    """distinct select on columns"""
+    distinct_on: [xrc20_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [xrc20_order_by!]
+
+    """filter the rows returned"""
+    where: xrc20_bool_exp
+  ): [xrc20!]!
+}
+
+"""
+columns and relationships of "scription.action"
+"""
+type scription_action {
+  action_hash: String!
+  action_type: String!
+  amount: numeric!
+  block_height: bigint
+  chain_id: Int!
+  contract_address: String!
+  data: String
+  encoding: Int!
+  execution_revert_msg: String!
+  gas_consumed: Int!
+  gas_limit: Int!
+  gas_price: numeric!
+  hash_data: [String!]
+  id: bigint!
+  nonce: bigint!
+  payload: bytea
+  recipient: String!
+  sender: String!
+  status: smallint!
+  timestamp: timestamp
+  version: Int!
+}
+
+"""
+Boolean expression to filter rows from the table "scription.action". All fields are combined with a logical 'AND'.
+"""
+input scription_action_bool_exp {
+  _and: [scription_action_bool_exp!]
+  _not: scription_action_bool_exp
+  _or: [scription_action_bool_exp!]
+  action_hash: String_comparison_exp
+  action_type: String_comparison_exp
+  amount: numeric_comparison_exp
+  block_height: bigint_comparison_exp
+  chain_id: Int_comparison_exp
+  contract_address: String_comparison_exp
+  data: String_comparison_exp
+  encoding: Int_comparison_exp
+  execution_revert_msg: String_comparison_exp
+  gas_consumed: Int_comparison_exp
+  gas_limit: Int_comparison_exp
+  gas_price: numeric_comparison_exp
+  hash_data: String_array_comparison_exp
+  id: bigint_comparison_exp
+  nonce: bigint_comparison_exp
+  payload: bytea_comparison_exp
+  recipient: String_comparison_exp
+  sender: String_comparison_exp
+  status: smallint_comparison_exp
+  timestamp: timestamp_comparison_exp
+  version: Int_comparison_exp
+}
+
+"""Ordering options when selecting data from "scription.action"."""
+input scription_action_order_by {
+  action_hash: order_by
+  action_type: order_by
+  amount: order_by
+  block_height: order_by
+  chain_id: order_by
+  contract_address: order_by
+  data: order_by
+  encoding: order_by
+  execution_revert_msg: order_by
+  gas_consumed: order_by
+  gas_limit: order_by
+  gas_price: order_by
+  hash_data: order_by
+  id: order_by
+  nonce: order_by
+  payload: order_by
+  recipient: order_by
+  sender: order_by
+  status: order_by
+  timestamp: order_by
+  version: order_by
+}
+
+"""
+select columns of table "scription.action"
+"""
+enum scription_action_select_column {
+  """column name"""
+  action_hash
+
+  """column name"""
+  action_type
+
+  """column name"""
+  amount
+
+  """column name"""
+  block_height
+
+  """column name"""
+  chain_id
+
+  """column name"""
+  contract_address
+
+  """column name"""
+  data
+
+  """column name"""
+  encoding
+
+  """column name"""
+  execution_revert_msg
+
+  """column name"""
+  gas_consumed
+
+  """column name"""
+  gas_limit
+
+  """column name"""
+  gas_price
+
+  """column name"""
+  hash_data
+
+  """column name"""
+  id
+
+  """column name"""
+  nonce
+
+  """column name"""
+  payload
+
+  """column name"""
+  recipient
+
+  """column name"""
+  sender
+
+  """column name"""
+  status
+
+  """column name"""
+  timestamp
+
+  """column name"""
+  version
+}
+
+"""
+Streaming cursor of the table "scription_action"
+"""
+input scription_action_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: scription_action_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input scription_action_stream_cursor_value_input {
+  action_hash: String
+  action_type: String
+  amount: numeric
+  block_height: bigint
+  chain_id: Int
+  contract_address: String
+  data: String
+  encoding: Int
+  execution_revert_msg: String
+  gas_consumed: Int
+  gas_limit: Int
+  gas_price: numeric
+  hash_data: [String!]
+  id: bigint
+  nonce: bigint
+  payload: bytea
+  recipient: String
+  sender: String
+  status: smallint
+  timestamp: timestamp
+  version: Int
+}
+
+"""
+columns and relationships of "scription.indexer_height"
+"""
+type scription_indexer_height {
+  current_height: bigint
+  id: Int!
+  name: String
+  start_height: bigint
+}
+
+"""
+Boolean expression to filter rows from the table "scription.indexer_height". All fields are combined with a logical 'AND'.
+"""
+input scription_indexer_height_bool_exp {
+  _and: [scription_indexer_height_bool_exp!]
+  _not: scription_indexer_height_bool_exp
+  _or: [scription_indexer_height_bool_exp!]
+  current_height: bigint_comparison_exp
+  id: Int_comparison_exp
+  name: String_comparison_exp
+  start_height: bigint_comparison_exp
+}
+
+"""Ordering options when selecting data from "scription.indexer_height"."""
+input scription_indexer_height_order_by {
+  current_height: order_by
+  id: order_by
+  name: order_by
+  start_height: order_by
+}
+
+"""
+select columns of table "scription.indexer_height"
+"""
+enum scription_indexer_height_select_column {
+  """column name"""
+  current_height
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  start_height
+}
+
+"""
+Streaming cursor of the table "scription_indexer_height"
+"""
+input scription_indexer_height_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: scription_indexer_height_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input scription_indexer_height_stream_cursor_value_input {
+  current_height: bigint
+  id: Int
+  name: String
+  start_height: bigint
+}
+
+"""
+columns and relationships of "scription.xrc20"
+"""
+type scription_xrc20 {
+  creator: String
+  dec: numeric
+  id: Int!
+  lim: numeric
+  max: numeric
+  tick: String
+}
+
+"""
+columns and relationships of "scription.xrc20_action"
+"""
+type scription_xrc20_action {
+  action_hash: String
+  amt: numeric
+  block_height: bigint
+  dec: numeric
+  hash_data: [String!]
+  id: Int!
+  lim: numeric
+  max: numeric
+  op: String
+  sender: String
+  tick: String
+  timestamp: timestamp
+}
+
+"""
+Boolean expression to filter rows from the table "scription.xrc20_action". All fields are combined with a logical 'AND'.
+"""
+input scription_xrc20_action_bool_exp {
+  _and: [scription_xrc20_action_bool_exp!]
+  _not: scription_xrc20_action_bool_exp
+  _or: [scription_xrc20_action_bool_exp!]
+  action_hash: String_comparison_exp
+  amt: numeric_comparison_exp
+  block_height: bigint_comparison_exp
+  dec: numeric_comparison_exp
+  hash_data: String_array_comparison_exp
+  id: Int_comparison_exp
+  lim: numeric_comparison_exp
+  max: numeric_comparison_exp
+  op: String_comparison_exp
+  sender: String_comparison_exp
+  tick: String_comparison_exp
+  timestamp: timestamp_comparison_exp
+}
+
+"""Ordering options when selecting data from "scription.xrc20_action"."""
+input scription_xrc20_action_order_by {
+  action_hash: order_by
+  amt: order_by
+  block_height: order_by
+  dec: order_by
+  hash_data: order_by
+  id: order_by
+  lim: order_by
+  max: order_by
+  op: order_by
+  sender: order_by
+  tick: order_by
+  timestamp: order_by
+}
+
+"""
+select columns of table "scription.xrc20_action"
+"""
+enum scription_xrc20_action_select_column {
+  """column name"""
+  action_hash
+
+  """column name"""
+  amt
+
+  """column name"""
+  block_height
+
+  """column name"""
+  dec
+
+  """column name"""
+  hash_data
+
+  """column name"""
+  id
+
+  """column name"""
+  lim
+
+  """column name"""
+  max
+
+  """column name"""
+  op
+
+  """column name"""
+  sender
+
+  """column name"""
+  tick
+
+  """column name"""
+  timestamp
+}
+
+"""
+Streaming cursor of the table "scription_xrc20_action"
+"""
+input scription_xrc20_action_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: scription_xrc20_action_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input scription_xrc20_action_stream_cursor_value_input {
+  action_hash: String
+  amt: numeric
+  block_height: bigint
+  dec: numeric
+  hash_data: [String!]
+  id: Int
+  lim: numeric
+  max: numeric
+  op: String
+  sender: String
+  tick: String
+  timestamp: timestamp
+}
+
+"""
+Boolean expression to filter rows from the table "scription.xrc20". All fields are combined with a logical 'AND'.
+"""
+input scription_xrc20_bool_exp {
+  _and: [scription_xrc20_bool_exp!]
+  _not: scription_xrc20_bool_exp
+  _or: [scription_xrc20_bool_exp!]
+  creator: String_comparison_exp
+  dec: numeric_comparison_exp
+  id: Int_comparison_exp
+  lim: numeric_comparison_exp
+  max: numeric_comparison_exp
+  tick: String_comparison_exp
+}
+
+"""Ordering options when selecting data from "scription.xrc20"."""
+input scription_xrc20_order_by {
+  creator: order_by
+  dec: order_by
+  id: order_by
+  lim: order_by
+  max: order_by
+  tick: order_by
+}
+
+"""
+select columns of table "scription.xrc20"
+"""
+enum scription_xrc20_select_column {
+  """column name"""
+  creator
+
+  """column name"""
+  dec
+
+  """column name"""
+  id
+
+  """column name"""
+  lim
+
+  """column name"""
+  max
+
+  """column name"""
+  tick
+}
+
+"""
+Streaming cursor of the table "scription_xrc20"
+"""
+input scription_xrc20_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: scription_xrc20_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input scription_xrc20_stream_cursor_value_input {
+  creator: String
+  dec: numeric
+  id: Int
+  lim: numeric
+  max: numeric
+  tick: String
+}
+
+"""
+columns and relationships of "scription.xrc20_transfer"
+"""
+type scription_xrc20_transfer {
+  action_hash: String
+  amt: numeric
+  balance: numeric
+  id: Int!
+  recipient: String
+  sender: String
+  tick: String
+}
+
+"""
+Boolean expression to filter rows from the table "scription.xrc20_transfer". All fields are combined with a logical 'AND'.
+"""
+input scription_xrc20_transfer_bool_exp {
+  _and: [scription_xrc20_transfer_bool_exp!]
+  _not: scription_xrc20_transfer_bool_exp
+  _or: [scription_xrc20_transfer_bool_exp!]
+  action_hash: String_comparison_exp
+  amt: numeric_comparison_exp
+  balance: numeric_comparison_exp
+  id: Int_comparison_exp
+  recipient: String_comparison_exp
+  sender: String_comparison_exp
+  tick: String_comparison_exp
+}
+
+"""Ordering options when selecting data from "scription.xrc20_transfer"."""
+input scription_xrc20_transfer_order_by {
+  action_hash: order_by
+  amt: order_by
+  balance: order_by
+  id: order_by
+  recipient: order_by
+  sender: order_by
+  tick: order_by
+}
+
+"""
+select columns of table "scription.xrc20_transfer"
+"""
+enum scription_xrc20_transfer_select_column {
+  """column name"""
+  action_hash
+
+  """column name"""
+  amt
+
+  """column name"""
+  balance
+
+  """column name"""
+  id
+
+  """column name"""
+  recipient
+
+  """column name"""
+  sender
+
+  """column name"""
+  tick
+}
+
+"""
+Streaming cursor of the table "scription_xrc20_transfer"
+"""
+input scription_xrc20_transfer_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: scription_xrc20_transfer_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input scription_xrc20_transfer_stream_cursor_value_input {
+  action_hash: String
+  amt: numeric
+  balance: numeric
+  id: Int
+  recipient: String
+  sender: String
+  tick: String
+}
+
+scalar smallint
+
+"""
+Boolean expression to compare columns of type "smallint". All fields are combined with logical 'AND'.
+"""
+input smallint_comparison_exp {
+  _eq: smallint
+  _gt: smallint
+  _gte: smallint
+  _in: [smallint!]
+  _is_null: Boolean
+  _lt: smallint
+  _lte: smallint
+  _neq: smallint
+  _nin: [smallint!]
+}
+
+type subscription_root {
+  """
+  fetch data from the table: "banner"
+  """
+  banner(
+    """distinct select on columns"""
+    distinct_on: [banner_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [banner_order_by!]
+
+    """filter the rows returned"""
+    where: banner_bool_exp
+  ): [banner!]!
+
+  """fetch data from the table: "banner" using primary key columns"""
+  banner_by_pk(id: Int!): banner
+
+  """
+  fetch data from the table in a streaming manner: "banner"
+  """
+  banner_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [banner_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: banner_bool_exp
+  ): [banner!]!
+
+  """
+  fetch data from the table: "contracts_verified"
+  """
+  contracts_verified(
+    """distinct select on columns"""
+    distinct_on: [contracts_verified_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [contracts_verified_order_by!]
+
+    """filter the rows returned"""
+    where: contracts_verified_bool_exp
+  ): [contracts_verified!]!
+
+  """
+  fetch aggregated fields from the table: "contracts_verified"
+  """
+  contracts_verified_aggregate(
+    """distinct select on columns"""
+    distinct_on: [contracts_verified_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [contracts_verified_order_by!]
+
+    """filter the rows returned"""
+    where: contracts_verified_bool_exp
+  ): contracts_verified_aggregate!
+
+  """
+  fetch data from the table: "contracts_verified" using primary key columns
+  """
+  contracts_verified_by_pk(id: bigint!): contracts_verified
+
+  """
+  fetch data from the table in a streaming manner: "contracts_verified"
+  """
+  contracts_verified_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [contracts_verified_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: contracts_verified_bool_exp
+  ): [contracts_verified!]!
+
+  """
+  fetch data from the table: "dapp"
+  """
+  dapp(
+    """distinct select on columns"""
+    distinct_on: [dapp_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [dapp_order_by!]
+
+    """filter the rows returned"""
+    where: dapp_bool_exp
+  ): [dapp!]!
+
+  """fetch data from the table: "dapp" using primary key columns"""
+  dapp_by_pk(id: Int!): dapp
+
+  """
+  fetch data from the table in a streaming manner: "dapp"
+  """
+  dapp_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [dapp_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: dapp_bool_exp
+  ): [dapp!]!
+
+  """
+  fetch data from the table: "ecosystem"
+  """
+  ecosystem(
+    """distinct select on columns"""
+    distinct_on: [ecosystem_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ecosystem_order_by!]
+
+    """filter the rows returned"""
+    where: ecosystem_bool_exp
+  ): [ecosystem!]!
+
+  """fetch data from the table: "ecosystem" using primary key columns"""
+  ecosystem_by_pk(id: uuid!): ecosystem
+
+  """
+  fetch data from the table in a streaming manner: "ecosystem"
+  """
+  ecosystem_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [ecosystem_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: ecosystem_bool_exp
+  ): [ecosystem!]!
+
+  """
+  fetch data from the table: "kv"
+  """
+  kv(
+    """distinct select on columns"""
+    distinct_on: [kv_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [kv_order_by!]
+
+    """filter the rows returned"""
+    where: kv_bool_exp
+  ): [kv!]!
+
+  """fetch data from the table: "kv" using primary key columns"""
+  kv_by_pk(key: String!): kv
+
+  """
+  fetch data from the table in a streaming manner: "kv"
+  """
+  kv_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [kv_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: kv_bool_exp
+  ): [kv!]!
+
+  """
+  fetch data from the table: "price_history"
+  """
+  price_history(
+    """distinct select on columns"""
+    distinct_on: [price_history_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [price_history_order_by!]
+
+    """filter the rows returned"""
+    where: price_history_bool_exp
+  ): [price_history!]!
+
+  """fetch data from the table: "price_history" using primary key columns"""
+  price_history_by_pk(id: Int!): price_history
+
+  """
+  fetch data from the table in a streaming manner: "price_history"
+  """
+  price_history_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [price_history_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: price_history_bool_exp
+  ): [price_history!]!
+
+  """
+  fetch data from the table: "scription.action"
+  """
+  scription_action(
+    """distinct select on columns"""
+    distinct_on: [scription_action_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scription_action_order_by!]
+
+    """filter the rows returned"""
+    where: scription_action_bool_exp
+  ): [scription_action!]!
+
+  """
+  fetch data from the table: "scription.action" using primary key columns
+  """
+  scription_action_by_pk(id: bigint!): scription_action
+
+  """
+  fetch data from the table in a streaming manner: "scription.action"
+  """
+  scription_action_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [scription_action_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: scription_action_bool_exp
+  ): [scription_action!]!
+
+  """
+  fetch data from the table: "scription.indexer_height"
+  """
+  scription_indexer_height(
+    """distinct select on columns"""
+    distinct_on: [scription_indexer_height_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scription_indexer_height_order_by!]
+
+    """filter the rows returned"""
+    where: scription_indexer_height_bool_exp
+  ): [scription_indexer_height!]!
+
+  """
+  fetch data from the table: "scription.indexer_height" using primary key columns
+  """
+  scription_indexer_height_by_pk(id: Int!): scription_indexer_height
+
+  """
+  fetch data from the table in a streaming manner: "scription.indexer_height"
+  """
+  scription_indexer_height_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [scription_indexer_height_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: scription_indexer_height_bool_exp
+  ): [scription_indexer_height!]!
+
+  """
+  fetch data from the table: "scription.xrc20"
+  """
+  scription_xrc20(
+    """distinct select on columns"""
+    distinct_on: [scription_xrc20_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scription_xrc20_order_by!]
+
+    """filter the rows returned"""
+    where: scription_xrc20_bool_exp
+  ): [scription_xrc20!]!
+
+  """
+  fetch data from the table: "scription.xrc20_action"
+  """
+  scription_xrc20_action(
+    """distinct select on columns"""
+    distinct_on: [scription_xrc20_action_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scription_xrc20_action_order_by!]
+
+    """filter the rows returned"""
+    where: scription_xrc20_action_bool_exp
+  ): [scription_xrc20_action!]!
+
+  """
+  fetch data from the table: "scription.xrc20_action" using primary key columns
+  """
+  scription_xrc20_action_by_pk(id: Int!): scription_xrc20_action
+
+  """
+  fetch data from the table in a streaming manner: "scription.xrc20_action"
+  """
+  scription_xrc20_action_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [scription_xrc20_action_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: scription_xrc20_action_bool_exp
+  ): [scription_xrc20_action!]!
+
+  """fetch data from the table: "scription.xrc20" using primary key columns"""
+  scription_xrc20_by_pk(id: Int!): scription_xrc20
+
+  """
+  fetch data from the table in a streaming manner: "scription.xrc20"
+  """
+  scription_xrc20_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [scription_xrc20_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: scription_xrc20_bool_exp
+  ): [scription_xrc20!]!
+
+  """
+  fetch data from the table: "scription.xrc20_transfer"
+  """
+  scription_xrc20_transfer(
+    """distinct select on columns"""
+    distinct_on: [scription_xrc20_transfer_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scription_xrc20_transfer_order_by!]
+
+    """filter the rows returned"""
+    where: scription_xrc20_transfer_bool_exp
+  ): [scription_xrc20_transfer!]!
+
+  """
+  fetch data from the table: "scription.xrc20_transfer" using primary key columns
+  """
+  scription_xrc20_transfer_by_pk(id: Int!): scription_xrc20_transfer
+
+  """
+  fetch data from the table in a streaming manner: "scription.xrc20_transfer"
+  """
+  scription_xrc20_transfer_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [scription_xrc20_transfer_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: scription_xrc20_transfer_bool_exp
+  ): [scription_xrc20_transfer!]!
+
+  """
+  fetch data from the table: "xrc20"
+  """
+  xrc20(
+    """distinct select on columns"""
+    distinct_on: [xrc20_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [xrc20_order_by!]
+
+    """filter the rows returned"""
+    where: xrc20_bool_exp
+  ): [xrc20!]!
+
+  """
+  fetch data from the table in a streaming manner: "xrc20"
+  """
+  xrc20_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [xrc20_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: xrc20_bool_exp
+  ): [xrc20!]!
+}
+
+scalar timestamp
+
+"""
+Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'.
+"""
+input timestamp_comparison_exp {
+  _eq: timestamp
+  _gt: timestamp
+  _gte: timestamp
+  _in: [timestamp!]
+  _is_null: Boolean
+  _lt: timestamp
+  _lte: timestamp
+  _neq: timestamp
+  _nin: [timestamp!]
+}
+
+scalar uuid
+
+"""
+Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
+"""
+input uuid_comparison_exp {
+  _eq: uuid
+  _gt: uuid
+  _gte: uuid
+  _in: [uuid!]
+  _is_null: Boolean
+  _lt: uuid
+  _lte: uuid
+  _neq: uuid
+  _nin: [uuid!]
+}
+
+"""
+columns and relationships of "xrc20"
+"""
+type xrc20 {
+  address: String
+  custom_config(
+    """JSON select path"""
+    path: String
+  ): jsonb
+  daily_transfer: numeric
+  daily_transfer_amount: numeric
+  decimals: Int
+  description: String
+  holders: Int
+  logo: String
+  name: String
+  price_to_iotex: numeric
+  symbol: String
+  total_supply: numeric
+  transfer: numeric
+}
+
+"""
+Boolean expression to filter rows from the table "xrc20". All fields are combined with a logical 'AND'.
+"""
+input xrc20_bool_exp {
+  _and: [xrc20_bool_exp!]
+  _not: xrc20_bool_exp
+  _or: [xrc20_bool_exp!]
+  address: String_comparison_exp
+  custom_config: jsonb_comparison_exp
+  daily_transfer: numeric_comparison_exp
+  daily_transfer_amount: numeric_comparison_exp
+  decimals: Int_comparison_exp
+  description: String_comparison_exp
+  holders: Int_comparison_exp
+  logo: String_comparison_exp
+  name: String_comparison_exp
+  price_to_iotex: numeric_comparison_exp
+  symbol: String_comparison_exp
+  total_supply: numeric_comparison_exp
+  transfer: numeric_comparison_exp
+}
+
+"""Ordering options when selecting data from "xrc20"."""
+input xrc20_order_by {
+  address: order_by
+  custom_config: order_by
+  daily_transfer: order_by
+  daily_transfer_amount: order_by
+  decimals: order_by
+  description: order_by
+  holders: order_by
+  logo: order_by
+  name: order_by
+  price_to_iotex: order_by
+  symbol: order_by
+  total_supply: order_by
+  transfer: order_by
+}
+
+"""
+select columns of table "xrc20"
+"""
+enum xrc20_select_column {
+  """column name"""
+  address
+
+  """column name"""
+  custom_config
+
+  """column name"""
+  daily_transfer
+
+  """column name"""
+  daily_transfer_amount
+
+  """column name"""
+  decimals
+
+  """column name"""
+  description
+
+  """column name"""
+  holders
+
+  """column name"""
+  logo
+
+  """column name"""
+  name
+
+  """column name"""
+  price_to_iotex
+
+  """column name"""
+  symbol
+
+  """column name"""
+  total_supply
+
+  """column name"""
+  transfer
+}
+
+"""
+Streaming cursor of the table "xrc20"
+"""
+input xrc20_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: xrc20_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input xrc20_stream_cursor_value_input {
+  address: String
+  custom_config: jsonb
+  daily_transfer: numeric
+  daily_transfer_amount: numeric
+  decimals: Int
+  description: String
+  holders: Int
+  logo: String
+  name: String
+  price_to_iotex: numeric
+  symbol: String
+  total_supply: numeric
+  transfer: numeric
+}

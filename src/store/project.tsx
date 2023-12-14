@@ -10,6 +10,20 @@ export class Project implements Store {
   description = StoragePlugin.Get({ key: 'project.description', value: 'This is dapp kit template project', engine: StoragePlugin.engines.asyncStorage });
   script = StoragePlugin.Get({ key: 'project.script', value: "console.log('from script')", engine: StoragePlugin.engines.asyncStorage });
   body = StoragePlugin.Get({ key: 'project.body', value: '', engine: StoragePlugin.engines.asyncStorage });
+  topNavList = [
+    {
+      title: 'Home',
+      url: '/service',
+    }, {
+      title: 'Docs',
+      url: 'https://docs.fastblocks.io/',
+      target: '_blank'
+    }, {
+      title: 'Support',
+      url: 'mailto:Support@fastblocks.io',
+      target: '_blank'
+    }
+  ]
   static Copy = observer(({ text, className, ...props }: { [key: string]: any }) => {
     const copied = StoragePlugin.Get({ key: 'copied', defaultValue: false });
     return (
