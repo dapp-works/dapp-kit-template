@@ -22,6 +22,27 @@ import {
 import { publicProvider } from 'wagmi/providers/public';
 import { Wallet, connectorsForWallets, getDefaultWallets, useConnectModal } from "@rainbow-me/rainbowkit";
 import { walletConnectWallet, metaMaskWallet, injectedWallet } from '@rainbow-me/rainbowkit/wallets';
+const kcc: any = {
+  id: 321,
+  name: 'KCC Mainnet',
+  network: 'kcc',
+  iconUrl: 'https://icons.llamao.fi/icons/chains/rsz_kucoin.jpg',
+  iconBackground: '#fff',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'KCS',
+    symbol: 'KCS',
+  },
+  rpcUrls: {
+    public: { http: ['https://rpc-mainnet.kcc.network'] },
+    default: { http: ['https://rpc-mainnet.kcc.network'] },
+  },
+  blockExplorers: {
+    default: { name: 'KCC Explorer', url: 'https://explorer.kcc.io' },
+    etherscan: { name: 'KCC Explorer', url: 'https://explorer.kcc.io' },
+  },
+  testnet: false,
+};
 
 export interface MyWalletOptions {
   chains: Chain[];
@@ -30,10 +51,11 @@ const _iotex = {
   iconUrl: 'https://mimo.exchange/images/iotex.svg',
   ...iotex
 }
+
 export const ioPayWallet = ({ chains, ...options }: MyWalletOptions): Wallet => ({
   id: 'ioPay',
   name: 'ioPay',
-  iconUrl: '/images/iopay-wallet.svg',
+  iconUrl: 'https://framerusercontent.com/images/zj4bWRK880xDSHFe6mk9E55Lo.png',
   iconBackground: 'transparent',
   hidden: ({ wallets }) => {
     if (typeof window !== "undefined") {
@@ -49,9 +71,11 @@ export const ioPayWallet = ({ chains, ...options }: MyWalletOptions): Wallet => 
     connector: new InjectedConnector({
       chains,
       options,
+
     }),
   }),
 });
+
 
 const projectId = '043229b9b9d784a5cfe40fe5f0107811'
 
@@ -192,9 +216,9 @@ export class WalletStore implements Store {
           res()
           return
         }
+        this.switchChain?.(chainId)
         const interval = setInterval(() => {
           if (this.switchChain) {
-            this.switchChain?.(chainId)
             console.log(this.chain?.id, chainId)
             if (this.chain?.id == chainId) {
               clearInterval(interval)
