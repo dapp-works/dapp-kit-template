@@ -26,7 +26,7 @@ export const LayoutClient = observer(({ children }: { children: React.ReactNode 
   return (
     <AppProvider>
        <Head>
-        <title>Fastblocks</title>
+        <title>Dapp kit template</title>
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
       </Head>
       <AppNavbar />

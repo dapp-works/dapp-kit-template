@@ -19,7 +19,7 @@
     "postinstall": "npm run gen"
   },
   "dependencies": {
-    "@dappworks/kit": "0.3.42",
+    "@dappworks/kit": "0.3.60",
     "@ethersproject/providers": "5.7.2",
     "@isaacs/ttlcache": "^1.4.1",
     "@monaco-editor/react": "^4.5.1",
