@@ -14,3 +14,4 @@ yarn.lock
 *.tsbuildinfo
 .scannerwork
 .tsbuildinfo
+.env
