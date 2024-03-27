@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events';
-import { TransactionReceipt, TransactionRequest } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import { SiweMessage } from 'siwe';
 import { _ } from '../lib/lodash';
@@ -7,16 +6,14 @@ import BigNumber from 'bignumber.js';
 import { RootStore, Store, BigNumberState, helper } from '@dappworks/kit';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { ToastPlugin } from '@dappworks/kit/plugins';
-import { Deferrable } from 'ethers/lib/utils';
 import { Chain, configureChains, createConfig, useAccount, useBalance, useConnect, useNetwork, usePublicClient, useSwitchNetwork, useWalletClient, WagmiConfig, WalletClient } from 'wagmi';
-import { mainnet, polygon, optimism, arbitrum, base, zora, iotex } from 'wagmi/chains';
+import { iotex } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
-import { Wallet, connectorsForWallets, getDefaultWallets, useConnectModal } from '@rainbow-me/rainbowkit';
-import { walletConnectWallet, metaMaskWallet, injectedWallet } from '@rainbow-me/rainbowkit/wallets';
-import { PublicClient, createPublicClient, createWalletClient, http } from 'viem';
+import { Wallet, connectorsForWallets, useConnectModal } from '@rainbow-me/rainbowkit';
+import { walletConnectWallet, metaMaskWallet } from '@rainbow-me/rainbowkit/wallets';
+import { PublicClient, createPublicClient, http } from 'viem';
 import { iotexTestnet } from '@/lib/chain';
-import { runInAction } from 'mobx';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
 const kcc: any = {
   id: 321,
@@ -107,19 +104,19 @@ export class WalletStore implements Store {
 
   writeTicker = 0;
   updateTicker = 0;
-  defaultChainId = 4689
+  defaultChainId = 4689;
 
   get supportChainId() {
-    if (!this.supportedChains.map(i => i.id).includes(this.chain?.id as any)) {
-      return this.defaultChainId
+    if (!this.supportedChains.map((i) => i.id).includes(this.chain?.id as any)) {
+      return this.defaultChainId;
     }
-    return this.chain?.id || this.defaultChainId
+    return this.chain?.id || this.defaultChainId;
   }
   getSupportChain(chain: any) {
-    if (!this.supportedChains.map(i => i.id).includes(chain?.id as any)) {
-      return _iotex
+    if (!this.supportedChains.map((i) => i.id).includes(chain?.id as any)) {
+      return _iotex;
     }
-    return chain
+    return chain;
   }
 
   constructor(args?: Partial<WalletStore>) {
@@ -192,7 +189,7 @@ export class WalletStore implements Store {
     }, [address, chain?.id]);
 
     if (chain) {
-      console.log('chainswitch', this.getSupportChain(chain)?.id)
+      console.log('chainswitch', this.getSupportChain(chain)?.id);
       try {
         this.publicClient = createPublicClient({
           chain: this.getSupportChain(chain),
@@ -201,7 +198,7 @@ export class WalletStore implements Store {
             multicall: true,
           },
         });
-      } catch (error) { }
+      } catch (error) {}
     }
     const { switchNetwork } = useSwitchNetwork();
     this.switchChain = switchNetwork;
@@ -326,7 +323,7 @@ export class WalletStore implements Store {
       this.updateTicker++;
       return receipt;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast.dismiss();
       if (autoAlert) {
         const msg = /reason="[A-Za-z0-9_ :"]*/g.exec(error?.message);

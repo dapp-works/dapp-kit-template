@@ -6,15 +6,14 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["metrics", "public"]
+  schemas  = ["public"]
 }
 
 model team {
-  id        Int     @id @default(autoincrement())
+  id        Int         @id @default(autoincrement())
   name      String
   creatorId String
-  plan      String? @default("starter")
-
+  plan      String?     @default("starter")
   team_user team_user[]
 
   @@schema("public")
@@ -25,46 +24,20 @@ model team_user {
   teamId Int
   userId String
   role   String @default("member")
-
-  team team @relation(fields: [teamId], references: [id])
-  user user @relation(fields: [userId], references: [id])
+  team   team   @relation(fields: [teamId], references: [id])
+  user   user   @relation(fields: [userId], references: [id])
 
   @@schema("public")
 }
 
 model user {
-  id        String  @id
-  name      String
-  email     String
+  id        String      @id
+  name      String?
+  email     String?
   image     String?
   loginType String
   role      String?
-
   team_user team_user[]
-  @@schema("public")
-}
-
-
-model token {
-  id          Int       @id @default(autoincrement())
-  name        String?   @unique(map: "token_name") @db.VarChar(32)
-  data        Json?
-  created_at  DateTime? @db.Timestamp(6)
-  updated_at  DateTime? @db.Timestamp(6)
-  social      Json?
-  description String?
-
-  @@schema("metrics")
-}
-
-model api_key {
-  id         Int      @id @default(autoincrement())
-  name       String
-  key        String
-  creatorId  String
-  teamId     Int
-  created_at DateTime @default(now()) @db.Timestamptz(6)
-  updated_at DateTime @default(now()) @db.Timestamptz(6)
 
   @@schema("public")
 }

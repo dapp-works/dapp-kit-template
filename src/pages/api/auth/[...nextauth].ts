@@ -1,4 +1,3 @@
-'use client';
 import NextAuth from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import { prisma } from '@/server/prisma';
@@ -7,54 +6,39 @@ import { helper } from '@/utils/helper';
 export default NextAuth({
   providers: [
     GithubProvider({
-      clientId: '14f83b848722e38be86a',
-      clientSecret: '5885b3c007e3940bd1f3fdd8da563a5f19b670a4',
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
       authorization: {
         url: 'https://github.com/login/oauth/authorize',
         params: { scope: 'read:user user:email' },
       },
-      // checks: ['none'],
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      if (user) {
+    async signIn({ user, account, profile }) {
+      if (user && account && profile) {
         try {
-          const _user = await prisma.user.findFirst({
+          const loginType = account.provider;
+          const _user = await prisma.user.upsert({
             where: {
-              id: {
-                equals: user.id,
-              },
+              id: user.id,
+            },
+            update: {
+              name: user.name,
+              email: user.email,
+              image: user.image,
+            },
+            create: {
+              loginType,
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              image: user.image,
             },
             select: {
               id: true,
             },
           });
-
-          if (_user) {
-            // user exists, update
-            await prisma.user.update({
-              where: {
-                id: user.id,
-              },
-              data: {
-                name: user.name as string,
-                email: user.email as string,
-                image: user.image,
-              },
-            });
-          } else {
-            // user does not exist, create
-            await prisma.user.create({
-              data: {
-                id: user.id,
-                name: user.name as string,
-                email: user.email as string,
-                image: user.image,
-                loginType: 'github',
-              },
-            });
-          }
 
           const team = await prisma.team.findFirst({
             where: {
@@ -102,10 +86,9 @@ export default NextAuth({
       if (user) {
         const iat = Date.now() / 1000;
         const exp = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
-        console.log(user.id, 'user.id');
         token.token = await helper.encode({
-          sub: user.id ?? '',
-          name: user.name as string,
+          sub: user.id,
+          name: user.name!,
           iat,
           exp,
         });

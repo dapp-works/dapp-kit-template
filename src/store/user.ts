@@ -1,20 +1,17 @@
-import { makeAutoObservable } from 'mobx';
 import { User } from 'next-auth';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
-import { api } from '@/lib/trpc';
-import { RootStore, Store, rootStore } from '@dappworks/kit';
-import { useRouter } from 'next/router';
+import { RootStore, Store } from '@dappworks/kit';
 
 export class UserStore implements User, Store {
   sid = 'user';
+  autoObservable = true;
+
   id: string = '';
   name?: string = '';
   email?: string = '';
   image?: string = '';
   token: string = '';
-  loginType: string = '';
-  isSuperAdmin: boolean = false;
 
   get event() {
     return RootStore.init().events;
@@ -41,36 +38,23 @@ export class UserStore implements User, Store {
     return !!this.token;
   }
 
-  set(args: Partial<UserStore>) {
+  setData(args: Partial<UserStore>) {
     Object.assign(this, args);
+  }
+
+  ready(args: Partial<UserStore>) {
+    this.setData(args);
     //@ts-ignore
     this.event.emit('user:ready', this);
-  }
-
-  logout() {
-    this.set({
-      id: '',
-      name: '',
-      email: '',
-      image: '',
-      token: '',
-      loginType: '',
-      isSuperAdmin: false,
-    });
-    signOut()
-  }
-
-  constructor() {
-    makeAutoObservable(this);
   }
 
   use() {
     const { data: session } = useSession();
     useEffect(() => {
-      const userStore = rootStore.get(UserStore);
+      const userStore = RootStore.Get(UserStore);
       if (!userStore.isLogin && session) {
         //@ts-ignore
-        userStore.set(session.user);
+        userStore.ready(session.user);
       }
     }, [session]);
   }

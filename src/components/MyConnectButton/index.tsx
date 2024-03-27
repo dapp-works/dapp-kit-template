@@ -55,7 +55,7 @@ export const MyConnectButton = observer(({ showChain = true, showAccount = true 
                             overflow: 'hidden',
                             marginRight: 4,
                             fontSize: '1rem',
-                            fontWeight: 700
+                            fontWeight: 700,
                           }}
                         >
                           {chain.iconUrl && <img alt={chain.name ?? 'Chain icon'} src={chain.iconUrl} style={{ width: 24, height: 24 }} />}
