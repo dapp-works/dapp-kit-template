@@ -1,3 +1,5 @@
+'use client';
+
 import { WalletStore } from '@/store/wallet';
 import { RootStore } from '@dappworks/kit';
 import { observer } from 'mobx-react-lite';

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import {
   Image,
@@ -25,13 +27,10 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import TeamStore from '@/store/team';
 import { cn } from '@/lib/utils';
 import { signOut } from 'next-auth/react';
+import { getSimpleFormData } from '@dappworks/kit/form';
 
 const AppNavbar = observer(() => {
-  const userStore = RootStore.Get(UserStore);
   const project = RootStore.Get(Project);
-
-  userStore.use();
-
   const menuItems = [];
 
   return (
@@ -106,6 +105,7 @@ const UserInfo = observer(() => {
       </Button>
     );
   }
+
   return (
     <Popover placement="bottom" showArrow={true}>
       <PopoverTrigger>
@@ -119,7 +119,7 @@ const UserInfo = observer(() => {
           {teams.value?.map((item, index) => (
             <div
               key={item.team.id}
-              className={cn('w-full flex items-center justify-between cursor-pointer my-2', {
+              className={cn('w-full flex items-center justify-between cursor-pointer my-2 p-2 rounded-sm', {
                 'bg-accent': item.team.id === currentTeam?.team.id,
               })}
               onClick={() => {
@@ -129,6 +129,34 @@ const UserInfo = observer(() => {
               <span>{item.team.name}</span>
             </div>
           ))}
+          <div
+            className="mt-3 w-full p-2 bg-accent rounded-sm cursor-pointer"
+            onClick={async () => {
+              try {
+                const formData = await getSimpleFormData(
+                  {
+                    name: '',
+                  },
+                  {
+                    name: {
+                      title: 'Team Name',
+                      required: true,
+                    },
+                  },
+                  {
+                    title: 'Create new team',
+                    className: 'w-[400px]',
+                  },
+                );
+                const name = formData.name.trim();
+                if (name) {
+                  team.createTeam.call(name);
+                }
+              } catch (error) {}
+            }}
+          >
+            Create new team
+          </div>
           <Divider className="my-2" />
           <Button
             className="mt-3 w-full"

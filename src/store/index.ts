@@ -1,4 +1,5 @@
 'use client';
+
 import { rootStore, helper } from '@dappworks/kit';
 import { DevInspectorPlugin } from '@dappworks/kit/inspector';
 import { ToastPlugin } from '@dappworks/kit/plugins';

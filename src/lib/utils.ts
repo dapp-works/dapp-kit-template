@@ -1,5 +1,3 @@
-import { BigNumberState } from '@dappworks/kit';
-import BigNumber from 'bignumber.js';
 import { type ClassValue, clsx } from 'clsx';
 import { ethers } from 'ethers';
 import { twMerge } from 'tailwind-merge';
@@ -15,7 +13,8 @@ export const safeAddress = (address): `0x${string}` | false => {
   } catch (error) {
     return false;
   }
-}
+};
+
 export const shortStr = (text: string, length = 10) => {
   if (text.length <= length) {
     return text;

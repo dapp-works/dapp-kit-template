@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@nextui-org/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { observer } from 'mobx-react-lite';

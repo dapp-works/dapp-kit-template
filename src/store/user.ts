@@ -2,6 +2,7 @@ import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import { RootStore, Store } from '@dappworks/kit';
+import { UserInfo, remult } from 'remult';
 
 export class UserStore implements User, Store {
   sid = 'user';
@@ -55,6 +56,7 @@ export class UserStore implements User, Store {
       if (!userStore.isLogin && session) {
         //@ts-ignore
         userStore.ready(session.user);
+        remult.user = session.user as UserInfo
       }
     }, [session]);
   }
