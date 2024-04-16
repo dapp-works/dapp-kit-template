@@ -3,55 +3,29 @@ import { ethers } from 'ethers';
 import { SiweMessage } from 'siwe';
 import { _ } from '../lib/lodash';
 import BigNumber from 'bignumber.js';
-import { RootStore, Store, BigNumberState, helper } from '@dappworks/kit';
-import { InjectedConnector } from 'wagmi/connectors/injected';
+import { RootStore, Store, BigNumberState, helper, PromiseHook } from '@dappworks/kit';
 import { ToastPlugin } from '@dappworks/kit/plugins';
-import { Chain, configureChains, createConfig, useAccount, useBalance, useConnect, useNetwork, usePublicClient, useSwitchNetwork, useWalletClient, WagmiConfig, WalletClient } from 'wagmi';
+import { createConfig, useAccount, useBalance, useChainId, useChains, useClient, useConnect, usePublicClient, useSwitchChain, useWalletClient, WagmiConfig, } from 'wagmi';
 import { iotex } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
-import { Wallet, connectorsForWallets, useConnectModal } from '@rainbow-me/rainbowkit';
-import { walletConnectWallet, metaMaskWallet } from '@rainbow-me/rainbowkit/wallets';
-import { PublicClient, createPublicClient, http } from 'viem';
+import { Chain, Wallet, WalletDetailsParams, connectorsForWallets, getDefaultConfig, getWalletConnectConnector, useConnectModal } from '@rainbow-me/rainbowkit';
+import { walletConnectWallet, metaMaskWallet, injectedWallet } from '@rainbow-me/rainbowkit/wallets';
+import { Account, PublicClient, Transport, WalletClient, createPublicClient, http } from 'viem';
 import { iotexTestnet } from '@/lib/chain';
 import { useEffect } from 'react';
-
-const kcc: any = {
-  id: 321,
-  name: 'KCC Mainnet',
-  network: 'kcc',
-  iconUrl: 'https://icons.llamao.fi/icons/chains/rsz_kucoin.jpg',
-  iconBackground: '#fff',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'KCS',
-    symbol: 'KCS',
-  },
-  rpcUrls: {
-    public: { http: ['https://rpc-mainnet.kcc.network'] },
-    default: { http: ['https://rpc-mainnet.kcc.network'] },
-  },
-  blockExplorers: {
-    default: { name: 'KCC Explorer', url: 'https://explorer.kcc.io' },
-    etherscan: { name: 'KCC Explorer', url: 'https://explorer.kcc.io' },
-  },
-  testnet: false,
-};
-
-export interface MyWalletOptions {
-  chains: Chain[];
-}
+import { StorageState } from './standard/StorageState';
+import { hooks } from '@/lib/hooks';
 
 const _iotex = {
   iconUrl: 'https://mimo.exchange/images/iotex.svg',
   ...iotex,
 };
 
-export const ioPayWallet = ({ chains, ...options }: MyWalletOptions): Wallet => ({
+export const ioPayWallet = (): Wallet => ({
   id: 'ioPay',
   name: 'ioPay',
   iconUrl: 'https://framerusercontent.com/images/zj4bWRK880xDSHFe6mk9E55Lo.png',
   iconBackground: 'transparent',
-  hidden: ({ wallets }) => {
+  hidden: () => {
     if (typeof window !== 'undefined') {
       if (helper.env.isIopayMobile()) {
         return false;
@@ -61,16 +35,11 @@ export const ioPayWallet = ({ chains, ...options }: MyWalletOptions): Wallet => 
       return true;
     }
   },
-  createConnector: () => ({
-    connector: new InjectedConnector({
-      chains,
-      options,
-    }),
-  }),
+  createConnector: (walletDetails: WalletDetailsParams) => injectedWallet().createConnector(walletDetails),
 });
 
 const projectId = '043229b9b9d784a5cfe40fe5f0107811';
-
+export type WalletTransactionHistoryType = { chainId: number, tx?: string, msg: string, timestamp: number, type: 'Approve' | 'Swap' | 'Liquidity', status: 'loading' | 'success' | 'fail' }
 export type NetworkObject = {
   name: string;
   chainId: number;
@@ -84,9 +53,14 @@ export type NetworkObject = {
 export class WalletStore implements Store {
   sid = 'wallet';
   autoObservable = true;
-  walletClient: WalletClient;
+  walletClient: WalletClient<Transport, Chain, Account>;
   rpcCilentId = '';
-  chain: Chain | undefined;
+  // chain: Chain | undefined;
+  get chain() {
+    if (!this.chainId) return null
+    return this.supportedChains.find((i) => i.id == this.chainId);
+  }
+  chainId: number | undefined;
   signer: ethers.providers.JsonRpcSigner;
   account: `0x${string}` = '0x...';
   autoConnect: boolean = true;
@@ -94,14 +68,22 @@ export class WalletStore implements Store {
   connect: any;
   openConnectModal: () => void;
   isConnect = false;
-  balance = new BigNumberState({});
+  balance = PromiseHook.wrap({
+    func: async () => {
+      if (!this.signer) return new BigNumberState({ value: new BigNumber(0) })
+      const balance = await this.signer?.getBalance()
+      if (balance) {
+        return new BigNumberState({ value: new BigNumber(balance?.toString() ?? '0') });
+      }
+    }
+  })
+  history = new StorageState<WalletTransactionHistoryType[] | null>({ value: [], key: 'history' });
   autoSign = true; //auto use swie sign
   event = new EventEmitter();
   rainbowkitParams: any = {};
   supportedChains = [_iotex, iotexTestnet];
-  switchChain: ((chainId_?: number | undefined) => void) | undefined;
+  switchChain: (({ chainId }: { chainId: number }) => void) | undefined;
   publicClient: PublicClient;
-
   writeTicker = 0;
   updateTicker = 0;
   defaultChainId = 4689;
@@ -112,44 +94,44 @@ export class WalletStore implements Store {
     }
     return this.chain?.id || this.defaultChainId;
   }
-  getSupportChain(chain: any) {
-    if (!this.supportedChains.map((i) => i.id).includes(chain?.id as any)) {
+  getSupportChain(chainId: any) {
+    if (!this.supportedChains.map((i) => i.id).includes(chainId)) {
       return _iotex;
     }
-    return chain;
+    return null;
+  }
+  getSupportChainId() {
+    if (!this.supportedChains.map(i => i.id).includes(this.chain?.id as any)) {
+      return this.defaultChainId
+    }
+    return this.chainId || this.defaultChainId
   }
 
   constructor(args?: Partial<WalletStore>) {
     Object.assign(this, args);
 
-    const { chains, publicClient } = configureChains(this.supportedChains, [publicProvider()]);
+    // const { chains, publicClient } = configureChains(this.supportedChains, [publicProvider()]);
 
-    const wallets = [ioPayWallet({ chains }), metaMaskWallet({ projectId, chains }), walletConnectWallet({ projectId, chains })];
+    // const wallets = [ioPayWallet({ chains }), metaMaskWallet({ projectId, chains }), walletConnectWallet({ projectId, chains })];
 
-    const connectors = connectorsForWallets([
-      {
-        groupName: 'Recommended',
-        wallets,
-      },
-    ]);
+    // const connectors = connectorsForWallets([
+    //   {
+    //     groupName: 'Recommended',
+    //     wallets,
+    //   },
+    // ]);
 
-    this.rainbowkitParams = {
-      chains,
-      publicClient,
-      wallets,
-      connectors,
-    };
-    try {
-      this.publicClient = createPublicClient({
-        chain: _iotex,
-        transport: http(),
-        batch: {
-          multicall: true,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    // try {
+    //   this.publicClient = createPublicClient({
+    //     chain: _iotex,
+    //     transport: http(),
+    //     batch: {
+    //       multicall: true,
+    //     },
+    //   });
+    // } catch (e) {
+    //   console.error(e);
+    // }
 
     if (typeof window !== 'undefined') {
       if (helper.env.isIopayMobile()) {
@@ -160,87 +142,58 @@ export class WalletStore implements Store {
   //todo: change chain
 
   get rainbowKitConfig() {
-    const wagmiConfig = createConfig({
-      autoConnect: true,
-      connectors: this.rainbowkitParams.connectors,
-      publicClient: this.rainbowkitParams.publicClient,
-    });
-
-    return { chains: this.rainbowkitParams.chains, wagmiConfig };
+    let transports = {}
+    this.supportedChains.forEach((i) => {
+      transports[i.id] = http();
+    })
+    const config = getDefaultConfig({
+      appName: 'DappKit demo',
+      projectId: 'YOUR_PROJECT_ID',
+      //@ts-ignore
+      chains: this.supportedChains,
+      transports,
+      batch: {
+        multicall: true,
+      },
+      wallets: [{
+        groupName: 'Recommended',
+        wallets: [metaMaskWallet, walletConnectWallet, ioPayWallet],
+      }]
+    })
+    return { chains: this.rainbowkitParams.chains, config };
   }
 
   use() {
-    const { data: walletClient } = useWalletClient({
-      onSuccess: (walletClient) => {
-        // @ts-ignore
-        const provider = new ethers.providers.Web3Provider(window?.ethereum);
-        this.signer = provider.getSigner();
-      },
-    });
-
-    this.walletClient = walletClient as WalletClient;
-    const { chain, chains } = useNetwork();
-    const { address, isConnecting, isConnected, isDisconnected } = useAccount();
-
+    const { data: walletClient } = useWalletClient();
+    this.walletClient = walletClient as WalletClient<Transport, Chain, Account>;
+    const chainId = useChainId();
+    const { address } = useAccount();
     this.account = address as `0x${string}`;
-    this.chain = chain;
+    this.chainId = chainId;
+
     useEffect(() => {
       this.updateTicker++;
-    }, [address, chain?.id]);
-
-    if (chain) {
-      console.log('chainswitch', this.getSupportChain(chain)?.id);
       try {
-        this.publicClient = createPublicClient({
-          chain: this.getSupportChain(chain),
-          transport: http(),
-          batch: {
-            multicall: true,
-          },
-        });
-      } catch (error) {}
-    }
-    const { switchNetwork } = useSwitchNetwork();
-    this.switchChain = switchNetwork;
-    const { openConnectModal } = useConnectModal();
-    const { connect } = useConnect({
-      onSuccess: (res) => {
-        console.log(res);
-      },
-    });
+        const provider = new ethers.providers.Web3Provider(window?.ethereum);
+        this.signer = provider.getSigner();
+        this.publicClient = usePublicClient({ config: this.rainbowKitConfig.config }) as PublicClient;
+      } catch (error) { }
+    }, [address, chainId]);
 
-    const {
-      data: balance,
-      isError,
-      isLoading,
-    } = useBalance({
-      address: address,
-    });
-    if (balance?.value.toString()) {
-      this.balance.value = new BigNumber(balance?.value.toString() ?? '0');
-    }
-    if (isConnected) {
-      this.isConnect = true;
-    } else {
-      this.isConnect = false;
-      this.balance.value = new BigNumber('0');
-    }
+    const { chains, switchChain } = useSwitchChain()
+    this.switchChain = switchChain;
+    const { openConnectModal } = useConnectModal();
+    const { connect } = useConnect();
 
     this.connect = connect;
     this.openConnectModal = openConnectModal as () => void;
+    this.balance.call()
   }
 
   set(args: Partial<WalletStore>) {
     Object.assign(this, args);
   }
 
-  // get currentNetwork() {
-  //   try {
-  //     return 123;
-  //   } catch {
-  //     return null;
-  //   }
-  // }
 
   toJSON() {
     const { account } = this;
@@ -256,7 +209,10 @@ export class WalletStore implements Store {
           res();
           return;
         }
-        this.switchChain?.(chainId);
+        if (chainId) {
+          this.switchChain?.({ chainId });
+        }
+
         const interval = setInterval(() => {
           if (this.switchChain) {
             console.log(this.chain?.id, chainId);
@@ -266,11 +222,11 @@ export class WalletStore implements Store {
             }
           }
         }, 1000);
+
       } else {
         try {
           this.openConnectModal();
-          // this.connect?.({ chainId, connector: this.rainbowkitParams.connectors()[0] }) connect success but ui not change so
-          const interval = setInterval(() => {
+          const interval = setInterval(async () => {
             console.log('wait connect', this.account);
             if (this.account) {
               clearInterval(interval);
