@@ -23,7 +23,7 @@ const _iotex = {
 export const ioPayWallet = (): Wallet => ({
   id: 'ioPay',
   name: 'ioPay',
-  iconUrl: 'https://framerusercontent.com/images/zj4bWRK880xDSHFe6mk9E55Lo.png',
+  iconUrl: '/images/iopay-wallet.svg',
   iconBackground: 'transparent',
   hidden: () => {
     if (typeof window !== 'undefined') {
@@ -53,7 +53,7 @@ export type NetworkObject = {
 export class WalletStore implements Store {
   sid = 'wallet';
   autoObservable = true;
-  walletClient: WalletClient<Transport, Chain, Account>;
+  walletClient: WalletClient;
   rpcCilentId = '';
   // chain: Chain | undefined;
   get chain() {
