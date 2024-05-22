@@ -25,15 +25,14 @@ export const ioPayWallet = (): Wallet => ({
   name: 'ioPay',
   iconUrl: '/images/iopay-wallet.svg',
   iconBackground: 'transparent',
-  hidden: () => {
-    if (typeof window !== 'undefined') {
-      if (helper.env.isIopayMobile()) {
-        return false;
-      }
-      return true;
-    } else {
-      return true;
-    }
+  downloadUrls: {
+    android: 'https://iopay.me/',
+    ios: 'https://iopay.me/',
+    chrome: 'https://iopay.me/',
+    qrCode: 'https://iopay.me/',
+  },
+  mobile: {
+    getUri: (uri: string) => uri,
   },
   createConnector: (walletDetails: WalletDetailsParams) => injectedWallet().createConnector(walletDetails),
 });
@@ -172,6 +171,7 @@ export class WalletStore implements Store {
     this.chainId = chainId;
 
     useEffect(() => {
+      console.log(address, chainId, 'address',walletClient)
       this.updateTicker++;
       try {
         const provider = new ethers.providers.Web3Provider(window?.ethereum);
