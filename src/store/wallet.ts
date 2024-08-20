@@ -1,208 +1,282 @@
-import { EventEmitter } from 'events';
+import { BigNumberState, ObjectPool, PromiseHook, RootStore, StorageState, Store } from '@dappworks/kit';
+import { useEffect } from 'react';
+import { Chain, iotex } from 'wagmi/chains';
+import { StoragePlugin } from '@dappworks/kit/experimental';
+import { ToastPlugin } from '@dappworks/kit/plugins';
+import { createPublicClient, http, WalletClient } from 'viem';
+import { iotexTestnet } from '@/lib/chain';
 import { ethers } from 'ethers';
-import { SiweMessage } from 'siwe';
 import { _ } from '../lib/lodash';
 import BigNumber from 'bignumber.js';
-import { RootStore, Store, BigNumberState, helper, PromiseHook } from '@dappworks/kit';
-import { ToastPlugin } from '@dappworks/kit/plugins';
-import { createConfig, useAccount, useBalance, useChainId, useChains, useClient, useConnect, usePublicClient, useSwitchChain, useWalletClient, WagmiConfig, } from 'wagmi';
-import { iotex } from 'wagmi/chains';
-import { Chain, Wallet, WalletDetailsParams, connectorsForWallets, getDefaultConfig, getWalletConnectConnector, useConnectModal } from '@rainbow-me/rainbowkit';
-import { walletConnectWallet, metaMaskWallet, injectedWallet } from '@rainbow-me/rainbowkit/wallets';
-import { Account, PublicClient, Transport, WalletClient, createPublicClient, http } from 'viem';
-import { iotexTestnet } from '@/lib/chain';
-import { useEffect } from 'react';
-import { StorageState } from './standard/StorageState';
-import { hooks } from '@/lib/hooks';
+import { makeObservable } from 'mobx';
+import { useAccount, useSwitchChain, useWalletClient } from 'wagmi';
+import { signMessage } from '@wagmi/core';
+import { SiweMessage } from 'siwe';
+import axios from 'axios';
+import { Wallet, WalletDetailsParams, getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { helper } from '@/lib/helper';
+import { binanceWallet, injectedWallet, metaMaskWallet, okxWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
 
-const _iotex = {
-  iconUrl: 'https://mimo.exchange/images/iotex.svg',
-  ...iotex,
-};
+const supportedChains: readonly [Chain, ...Chain[]] = [
+  {
+    ...iotex,
+    // @ts-ignore
+    iconUrl: 'https://mimo.exchange/images/iotex.svg',
+  },
+  {
+    ...iotexTestnet,
+    iconUrl: '/iotex.svg',
+  },
+];
 
-export const ioPayWallet = (): Wallet => ({
+const ioPayWallet = (): Wallet => ({
   id: 'ioPay',
   name: 'ioPay',
-  iconUrl: '/images/iopay-wallet.svg',
+  iconUrl: '/iopay-wallet.svg',
   iconBackground: 'transparent',
-  downloadUrls: {
-    android: 'https://iopay.me/',
-    ios: 'https://iopay.me/',
-    chrome: 'https://iopay.me/',
-    qrCode: 'https://iopay.me/',
-  },
-  mobile: {
-    getUri: (uri: string) => uri,
+  hidden: () => {
+    if (typeof window !== 'undefined') {
+      if (helper.env.isIopayMobile) {
+        return false;
+      }
+      return true;
+    } else {
+      return true;
+    }
   },
   createConnector: (walletDetails: WalletDetailsParams) => injectedWallet().createConnector(walletDetails),
 });
 
-const projectId = '043229b9b9d784a5cfe40fe5f0107811';
-export type WalletTransactionHistoryType = { chainId: number, tx?: string, msg: string, timestamp: number, type: 'Approve' | 'Swap' | 'Liquidity', status: 'loading' | 'success' | 'fail' }
-export type NetworkObject = {
-  name: string;
-  chainId: number;
-  rpcUrl: string;
-  logoUrl: string;
-  explorerUrl: string;
-  explorerName: string;
-  nativeCoin: string;
-  type: 'mainnet' | 'testnet';
-};
 export class WalletStore implements Store {
-  sid = 'wallet';
-  autoObservable = true;
-  walletClient: WalletClient;
-  rpcCilentId = '';
-  // chain: Chain | undefined;
-  get chain() {
-    if (!this.chainId) return null
-    return this.supportedChains.find((i) => i.id == this.chainId);
-  }
-  chainId: number | undefined;
-  signer: ethers.providers.JsonRpcSigner;
-  account: `0x${string}` = '0x...';
-  autoConnect: boolean = true;
-  connectWithMetamask: any;
-  connect: any;
-  openConnectModal: () => void;
-  isConnect = false;
+  sid = 'WalletStore';
+  autoObservable = false;
+
+  account: `0x${string}` | null = null;
+
+  token = StoragePlugin.Get({
+    key: 'wallet:token',
+    value: '',
+    engine: StoragePlugin.engines.localStorage,
+  });
+
+  tokenAddress = StoragePlugin.Get({
+    key: 'wallet:tokenAddress',
+    value: '',
+    engine: StoragePlugin.engines.localStorage,
+  });
+
   balance = PromiseHook.wrap({
     func: async () => {
-      if (!this.signer) return new BigNumberState({ value: new BigNumber(0) })
-      const balance = await this.signer?.getBalance()
+      if (!this.signer) return new BigNumberState({ value: new BigNumber(0) });
+      const balance = await this.signer?.getBalance();
       if (balance) {
         return new BigNumberState({ value: new BigNumber(balance?.toString() ?? '0') });
       }
-    }
-  })
-  history = new StorageState<WalletTransactionHistoryType[] | null>({ value: [], key: 'history' });
-  autoSign = true; //auto use swie sign
-  event = new EventEmitter();
-  rainbowkitParams: any = {};
-  supportedChains = [_iotex, iotexTestnet];
-  switchChain: (({ chainId }: { chainId: number }) => void) | undefined;
-  publicClient: PublicClient;
-  writeTicker = 0;
-  updateTicker = 0;
-  defaultChainId = 4689;
+    },
+  });
 
+  get event() {
+    return RootStore.init().events;
+  }
+
+  wait() {
+    return new Promise<WalletStore>((res, rej) => {
+      if (this.account && this.token.value) {
+        res(this);
+      }
+
+      //@ts-ignore
+      this.event.once('walletAccount:ready', () => {
+        res(this);
+      });
+    });
+  }
+
+  static wait() {
+    return RootStore.Get(WalletStore).wait();
+  }
+
+  get isLogin() {
+    return !!this.token.value;
+  }
+
+  setData(args: Partial<WalletStore>) {
+    Object.assign(this, args);
+  }
+
+  constructor() {
+    makeObservable(this, {
+      account: true,
+      token: true,
+      // writeTicker: true,
+      // updateTicker: true,
+    });
+  }
+
+  defaultChainId = 4689;
+  chainId: number | undefined;
+  get chain() {
+    if (!this.chainId) return null;
+    return supportedChains.find((i) => i.id == this.chainId);
+  }
   get supportChainId() {
-    if (!this.supportedChains.map((i) => i.id).includes(this.chain?.id as any)) {
+    if (!supportedChains.map((i) => i.id).includes(this.chain?.id as any)) {
       return this.defaultChainId;
     }
     return this.chain?.id || this.defaultChainId;
   }
   getSupportChain(chainId: any) {
-    if (!this.supportedChains.map((i) => i.id).includes(chainId)) {
-      return _iotex;
+    if (!supportedChains.map((i) => i.id).includes(chainId)) {
+      return supportedChains[0];
     }
-    return null;
+    return supportedChains.find((i) => i.id == chainId) || supportedChains[0];
   }
   getSupportChainId() {
-    if (!this.supportedChains.map(i => i.id).includes(this.chain?.id as any)) {
-      return this.defaultChainId
+    if (!supportedChains.map((i) => i.id).includes(this.chain?.id as any)) {
+      return this.defaultChainId;
     }
-    return this.chainId || this.defaultChainId
+    return this.chainId || this.defaultChainId;
   }
 
-  constructor(args?: Partial<WalletStore>) {
-    Object.assign(this, args);
-
-    // const { chains, publicClient } = configureChains(this.supportedChains, [publicProvider()]);
-
-    // const wallets = [ioPayWallet({ chains }), metaMaskWallet({ projectId, chains }), walletConnectWallet({ projectId, chains })];
-
-    // const connectors = connectorsForWallets([
-    //   {
-    //     groupName: 'Recommended',
-    //     wallets,
-    //   },
-    // ]);
-
-    // try {
-    //   this.publicClient = createPublicClient({
-    //     chain: _iotex,
-    //     transport: http(),
-    //     batch: {
-    //       multicall: true,
-    //     },
-    //   });
-    // } catch (e) {
-    //   console.error(e);
-    // }
-
-    if (typeof window !== 'undefined') {
-      if (helper.env.isIopayMobile()) {
-        // this.supportedWallets.unshift(iopayWallet);
-      }
-    }
-  }
-  //todo: change chain
-
-  get rainbowKitConfig() {
-    let transports = {}
-    this.supportedChains.forEach((i) => {
-      transports[i.id] = http();
-    })
-    const config = getDefaultConfig({
-      appName: 'DappKit demo',
-      projectId: 'YOUR_PROJECT_ID',
-      //@ts-ignore
-      chains: this.supportedChains,
-      transports,
-      batch: {
-        multicall: true,
-      },
-      wallets: [{
+  wagmiConfig = getDefaultConfig({
+    appName: 'depinscan',
+    projectId: 'b69e844f38265667350efd78e3e1a5fb',
+    chains: supportedChains,
+    wallets: [
+      {
         groupName: 'Recommended',
-        wallets: [metaMaskWallet, walletConnectWallet, ioPayWallet],
-      }]
-    })
-    return { chains: this.rainbowkitParams.chains, config };
-  }
+        wallets: [metaMaskWallet, walletConnectWallet, okxWallet, binanceWallet],
+      },
+    ],
+    ssr: false,
+  });
+  walletClient: WalletClient;
+  signer: ethers.providers.JsonRpcSigner;
+  switchChain: (({ chainId }: { chainId: number }) => void) | undefined;
+  openConnectModal: () => void;
 
-  use() {
+  writeTicker = 0;
+  updateTicker = 0;
+
+  useWalletConnect() {
+    const { address, isConnected, chain } = useAccount();
+    const { switchChain } = useSwitchChain();
     const { data: walletClient } = useWalletClient();
-    this.walletClient = walletClient as WalletClient<Transport, Chain, Account>;
-    const chainId = useChainId();
-    const { address } = useAccount();
-    this.account = address as `0x${string}`;
-    this.chainId = chainId;
+    // @ts-ignore
+    this.walletClient = walletClient;
 
     useEffect(() => {
-      console.log(address, chainId, 'address',walletClient)
-      this.updateTicker++;
-      try {
+      if (!isConnected) {
+        if (this.account) {
+          this.account = null;
+        }
+        return;
+      }
+
+      if (address && chain) {
+        this.setData({
+          account: address,
+          chainId: chain.id,
+        });
+
+        this.updateTicker++;
+
+        this.debounceReady();
+      }
+    }, [isConnected, chain, address]);
+
+    useEffect(() => {
+      const { ethereum } = window;
+      if (ethereum && ethereum.isMetaMask) {
         const provider = new ethers.providers.Web3Provider(window?.ethereum);
-        this.signer = provider.getSigner();
-        this.publicClient = usePublicClient({ config: this.rainbowKitConfig.config }) as PublicClient;
-      } catch (error) { }
-    }, [address, chainId]);
-
-    const { chains, switchChain } = useSwitchChain()
-    this.switchChain = switchChain;
-    const { openConnectModal } = useConnectModal();
-    const { connect } = useConnect();
-
-    this.connect = connect;
-    this.openConnectModal = openConnectModal as () => void;
-    this.balance.call()
+        this.setData({
+          switchChain,
+          signer: provider.getSigner(),
+        });
+      }
+    }, []);
   }
 
-  set(args: Partial<WalletStore>) {
-    Object.assign(this, args);
+  debounceReady = _.debounce(this.ready, 1000);
+
+  async ready() {
+    if (!this.account) {
+      return;
+    }
+    const account = this.account.toLowerCase();
+    const tokenAddress = this.tokenAddress.value?.toLowerCase();
+    if (tokenAddress !== account) {
+      this.clearToken();
+      // await this.login(this.account);
+    } else {
+      // @ts-ignore
+      this.event.emit('walletAccount:ready');
+    }
   }
 
+  async createSiweMessage(address: string, chainId: number) {
+    const res = await axios.get(`/api/auth/siwe/nonce`);
+    const nonce = res.data.nonce;
+    const message = new SiweMessage({
+      address,
+      nonce,
+      chainId,
+      statement: `Log in to DePIN Scan.`,
+      domain: window.location.host,
+      uri: window.location.origin,
+      version: '1',
+    });
+    return message.prepareMessage();
+  }
 
-  toJSON() {
-    const { account } = this;
-    return { account };
+  async login(account: `0x${string}`) {
+    await new Promise<void>((res) => {
+      setTimeout(() => {
+        res();
+      }, 1000);
+    });
+    try {
+      const message = await this.createSiweMessage(account, this.supportChainId);
+      const signature = await signMessage(this.wagmiConfig, {
+        account,
+        message,
+      });
+      const tokenRes = await axios.post(`/api/auth/siwe/jwt`, {
+        account,
+        message,
+        signature,
+      });
+      const token = tokenRes.data.token;
+      if (token) {
+        this.setData({
+          account,
+        });
+        this.token.set?.(token);
+        this.tokenAddress.set?.(account);
+
+        // @ts-ignore
+        this.event.emit('walletAccount:ready');
+      }
+    } catch (error) {
+      console.log(error);
+      // RootStore.Get(ToastPlugin).error(error.message);
+    }
+  }
+
+  logout() {
+    if (this.account) {
+      this.account = null;
+    }
+    this.clearToken();
+  }
+
+  clearToken() {
+    this.token.set?.('');
+    this.tokenAddress.set?.('');
   }
 
   async prepare(chainId?: number): Promise<WalletStore> {
     const promise = new Promise<void>(async (res, rej) => {
-      console.log(this.account);
       if (!window) return;
       if (this.account) {
         if (Number(this.chain?.id) == Number(chainId)) {
@@ -215,14 +289,12 @@ export class WalletStore implements Store {
 
         const interval = setInterval(() => {
           if (this.switchChain) {
-            console.log(this.chain?.id, chainId);
             if (this.chain?.id == chainId) {
               clearInterval(interval);
               res();
             }
           }
         }, 1000);
-
       } else {
         try {
           this.openConnectModal();
@@ -243,58 +315,170 @@ export class WalletStore implements Store {
     return this;
   }
 
-  async signMessage() {
-    const message = new SiweMessage({
-      address: this.account,
-      chainId: this.chain?.id,
-      expirationTime: new Date(Date.now() + 3 * 60 * 1000).toISOString(),
-      domain: document.location.host,
-      uri: document.location.origin,
-      version: '1',
+  getPublicClient(chainId: number) {
+    const res = ObjectPool.get(`publicClient-${chainId}`, () => {
+      let chain: Chain = iotex;
+      if (supportedChains.map((i) => i.id).includes(chainId as any)) {
+        chain = supportedChains.find((i) => i.id == chainId) as Chain;
+      }
+      return createPublicClient({
+        chain,
+        transport: http(),
+        batch: {
+          multicall: {
+            wait: 300,
+          },
+        },
+      });
     });
-    // const signature = await this.wallet.signMessage(message.prepareMessage());
-    // return signature;
+    return res;
   }
 
-  static async SendTx(...args: Parameters<WalletStore['sendTx']>) {
-    return RootStore.Get(WalletStore).sendTx(...args);
-  }
+  history = new StorageState<WalletTransactionHistoryType[] | null>({ value: [], key: 'history' });
+
   async sendTx({ chainId, tx, autoAlert = true, loadingText, successText }: { chainId: number | string; tx: any; autoAlert?: boolean; loadingText?: string; successText?: string }) {
     const toast = RootStore.Get(ToastPlugin);
-
     try {
       if (loadingText) toast.loading(loadingText);
       if (!chainId) throw new Error('chainId, address, data is required');
-      await RootStore.Get(WalletStore).prepare(Number(chainId));
+      await this.prepare(Number(chainId));
       const hash = await tx();
-      const receipt = await this.publicClient.waitForTransactionReceipt({ hash });
+      const publicClient = this.getPublicClient(Number(chainId));
+      const receipt = await publicClient.waitForTransactionReceipt({ hash });
+      toast.dismiss();
       if (receipt.status == 'success') {
         toast.success('The transaction was successful');
       } else {
         toast.error('The transaction failed');
+        return {
+          errMsg: 'The transaction failed',
+        };
       }
-      toast.dismiss();
       if (successText) toast.success(successText);
       this.writeTicker++;
       this.updateTicker++;
-      return receipt;
+      return {
+        receipt,
+        errMsg: '',
+      };
     } catch (error) {
-      console.log(error);
       toast.dismiss();
       if (autoAlert) {
-        const msg = /reason="[A-Za-z0-9_ :"]*/g.exec(error?.message);
-        if (error?.message?.includes('user rejected transaction') || String(error).toLowerCase().includes('user rejected')) {
-          toast.error('user rejected transaction');
-          return;
+        const errMsg = error?.message;
+        if (errMsg?.includes('User rejected transaction') || errMsg?.toLowerCase().includes('user rejected')) {
+          toast.error('User rejected transaction');
+          return {
+            errMsg: 'User rejected transaction',
+          };
         }
+        const msg = /reason="[A-Za-z0-9_ :"]*/g.exec(errMsg);
         if (msg) {
           toast.error(msg as unknown as string);
+          return {
+            errMsg: msg,
+          };
         } else {
-          toast.error(String(error?.message || error));
+          toast.error(errMsg);
+          return {
+            errMsg: errMsg,
+          };
         }
       } else {
         throw error;
       }
     }
   }
+
+  async sendRawTx({
+    chainId,
+    address,
+    data,
+    value = 0,
+    autoAlert = true,
+    onSended,
+    onSuccess,
+    onError,
+    historyItem,
+    loadingText,
+  }: {
+    loadingText?: string;
+    chainId: number | string;
+    address: string;
+    data: string | null;
+    value?: string | number;
+    autoRefresh?: boolean;
+    autoAlert?: boolean;
+    historyItem?: Pick<WalletTransactionHistoryType, 'msg' | 'type'>;
+    showTransactionSubmitDialog?: boolean;
+    onSended?: ({ res }: { res: ethers.providers.TransactionResponse }) => void;
+    onSuccess?: ({ res }: { res: any }) => void;
+    onError?: ({ res }: { res: any }) => void;
+  }): Promise<any | undefined> {
+    chainId = Number(chainId);
+    const toast = RootStore.Get(ToastPlugin);
+    try {
+      if (!chainId || !address) throw new Error('chainId, address, is required');
+      const wallet = await RootStore.Get(WalletStore).prepare(chainId);
+      if (loadingText) toast.loading(loadingText);
+      let sendTransactionParam: any = _.omitBy(
+        {
+          to: address,
+          data,
+          value: value ? ethers.BigNumber.from(value) : null,
+          gasPrice: null,
+        },
+        _.isNil,
+      );
+      const res = await wallet.signer.sendTransaction(sendTransactionParam);
+      onSended ? onSended({ res }) : null;
+      const receipt = await res.wait();
+      if (receipt.status == 1) {
+        onSuccess && onSuccess({ res: receipt });
+        toast.dismiss();
+        toast.success('The transaction was successful');
+      } else {
+        onError && onError({ res: receipt });
+        toast.dismiss();
+        toast.error('The transaction failed');
+      }
+      return receipt;
+    } catch (error) {
+      toast.dismiss();
+      const errMsg = error?.message;
+      if (errMsg?.includes('User rejected transaction') || errMsg?.toLowerCase().includes('User rejected') || errMsg?.toLowerCase().includes('user denied')) {
+        autoAlert && toast.error('User rejected transaction');
+        return;
+      }
+      const msg = /reason="[A-Za-z0-9_ :"]*/g.exec(errMsg);
+      if (msg) {
+        autoAlert && toast.error(msg as unknown as string);
+      } else {
+        autoAlert && toast.error(errMsg);
+      }
+      if (!autoAlert) {
+        throw error;
+      }
+    }
+  }
+
+  static async SendTx(...args: Parameters<WalletStore['sendTx']>) {
+    return RootStore.Get(WalletStore).sendTx(...args);
+  }
+
+  static async SendRawTx(...args: Parameters<WalletStore['sendRawTx']>) {
+    return RootStore.Get(WalletStore).sendRawTx(...args);
+  }
 }
+
+export type WalletTransactionHistoryType = { chainId: number; tx?: string; msg: string; timestamp: number; type: 'Approve' | 'Swap' | 'Liquidity'; status: 'loading' | 'success' | 'fail' };
+
+export type NetworkObject = {
+  name: string;
+  chainId: number;
+  rpcUrl: string;
+  logoUrl: string;
+  explorerUrl: string;
+  explorerName: string;
+  nativeCoin: string;
+  type: 'mainnet' | 'testnet';
+};

@@ -1,111 +1,138 @@
-import { BigNumberState } from "@dappworks/kit";
-import { ethers } from "ethers";
-import numeral from 'numeral'
+import { _ } from './lodash';
+import { v4 as uuid } from 'uuid';
+import JSONFormat from 'json-format';
+import jwt from 'jsonwebtoken';
 import BigNumber from 'bignumber.js';
+import numeral from 'numeral';
+import { BigNumberState } from '@dappworks/kit';
 
-export type TypeWarpBigNumber = {
-  value: string;
-  format: string;
-  decimals: string;
+const valMap = {
+  undefined: '',
+  null: '',
+  false: false,
 };
 
 export const helper = {
-  env: {
-    //@ts-ignore
-    isBrower: typeof window === 'undefined' ? false : true,
-    isIopayMobile: global?.navigator?.userAgent && (global?.navigator?.userAgent.includes('IoPayAndroid') || global?.navigator?.userAgent.includes('IoPayiOs')),
-    isPc() {
-      const userAgentInfo = global?.navigator?.userAgent;
-      const Agents = ['Android', 'iPhone', 'SymbianOS', 'Windows Phone', 'iPad', 'iPod'];
-      let flag = true;
-      for (let v = 0; v < Agents.length; v++) {
-        if (userAgentInfo?.indexOf(Agents[v] || '') > 0) {
-          flag = false;
-          break;
-        }
-      }
-      return flag;
-    }
+  promise: {
+    async sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
+    async runAsync<T, U = Error>(promise: Promise<T>): Promise<[U | null, T | null]> {
+      return promise.then<[null, T]>((data: T) => [null, data]).catch<[U, null]>((err) => [err, null]);
+    },
   },
-  util: {
-    async testRpc(url: string): Promise<{ url: string, lentency: number, height: number }> {
-      const start = performance.now(); // 开始时间
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            method: 'eth_getBlockByNumber',
-            params: ["latest", false],
-            id: 1,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error from server: ${response.status}`);
+  object: {
+    crawlObject(object, options) {
+      const newObj = JSON.parse(JSON.stringify(object));
+      return helper.object.crawl(newObj, options);
+    },
+    crawl(object, options) {
+      Object.keys(object).forEach((i) => {
+        if (typeof object[i] === 'object') {
+          helper.object.crawl(object[i], options);
+        } else {
+          const handler = options[typeof object[i]];
+          if (handler) {
+            object[i] = handler(object[i]);
+          }
         }
-        const res = await response.json();
-        console.log(res)
-        const end = performance.now();
-        return { url, lentency: Number(helper.number.numberFormat(((end - start) / 1000), '0.000', { fallback: '-1' })), height: parseInt(res.result.number, 16) };
-      } catch (error) {
-        console.error('RPC Latency Test Failed:', error);
-        return { url, lentency: -1, height: -1 }; // 在发生错误时返回 -1
-      }
-    }
+      });
+      return object;
+    },
   },
   json: {
+    isJsonString(str: string) {
+      if (!str || typeof str !== 'string') return false;
+      if (!str?.includes('{')) return false;
+      try {
+        JSON.parse(str);
+      } catch (e) {
+        return false;
+      }
+      return true;
+    },
     safeParse(val: any) {
       try {
         return JSON.parse(val);
       } catch (error) {
         return val;
       }
-    }
-  },
-  address: {
-    formatAddress(address) {
-      if (!address) return;
-      return address.replace(/^(.{4})(.*)(.{4})$/, '$1...$3');
     },
-    validateEthAddress(address: string) {
-      return /^0x[a-fA-F0-9]{40}$/.test(address);
-    },
-    validateIoAddress(address: string) {
-      return /^io[a-zA-Z0-9]{39}$/.test(address);
-    },
-    validateAddress(address: string) {
-      return helper.address.validateEthAddress(address) || helper.address.validateIoAddress(address);
-    },
-    safeAddress(address): `0x${string}` | false {
+    clearUUID(val: any) {
       try {
-        const parsedAddress = ethers.utils.getAddress(address);
-        return parsedAddress as `0x${string}`;
-      } catch (error) {
-        return false;
+        return JSON.parse(JSON.stringify(val).replace(/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}/g, uuid()));
+      } catch (e) {
+        return val;
       }
-    }
+    },
   },
-  string: {
-    shortString(fullStr = '', strLen, separator) {
-      if (!fullStr || fullStr.length <= strLen) return fullStr;
-
-      separator = separator || '...';
-
-      var sepLen = separator.length,
-        charsToShow = strLen - sepLen,
-        frontChars = Math.ceil(charsToShow / 2),
-        backChars = Math.floor(charsToShow / 2);
-      return fullStr.substr(0, frontChars) + separator + fullStr.substr(fullStr.length - backChars);
-    }
+  deepAssign(target, ...sources) {
+    sources.forEach((source) => {
+      Object.keys(source).forEach((key) => {
+        let descriptor = Object.getOwnPropertyDescriptor(source, key);
+        if (descriptor && descriptor?.get) {
+          return Object.defineProperty(target, key, descriptor);
+        }
+        const targetValue = target[key];
+        let sourceValue = source[key];
+        if (helper.isObject(targetValue) && helper.isObject(sourceValue)) {
+          try {
+            target[key] = helper.deepAssign(targetValue, sourceValue);
+          } catch (e) {
+            target[key] = Object.assign(targetValue, sourceValue);
+          }
+        } else {
+          target[key] = sourceValue;
+        }
+      });
+    });
+    return target;
+  },
+  isObject(value) {
+    return value != null && typeof value === 'object';
+  },
+  deepMerge(obj, newObj) {
+    const newVal = _.mergeWith(obj, newObj, (...args) => {
+      const [objValue, srcValue] = args;
+      if (typeof srcValue === 'object') {
+        return helper.deepMerge(objValue, srcValue);
+      }
+      return srcValue || valMap[srcValue];
+    });
+    return newVal;
+  },
+  download: {
+    downloadByBlob(name: string, blob: Blob) {
+      const a = document.createElement('a');
+      const href = window.URL.createObjectURL(blob);
+      a.href = href;
+      a.download = name;
+      a.click();
+    },
+    downloadJSON(name: string, jsonObj: object) {
+      try {
+        const jsonStr: string = JSONFormat(jsonObj);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        this.downloadByBlob(name + '.json', blob);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    downloadByLink(href: string) {
+      const a = document.createElement('a');
+      a.href = href;
+      a.click();
+    },
   },
   number: {
-    //format: '0,0'
-    warpBigNumber(value: string, decimals = 18, options?: { format?: string, fallback?: string, min?: number }) {
-      const { format = '0.0', fallback = '0.000', min } = options || {}
+    clamp(val, min, max) {
+      return val > max ? max : val < min ? min : val;
+    },
+    convertRange(value, r1, r2) {
+      return ((value - r1[0]) * (r2[1] - r2[0])) / (r1[1] - r1[0]) + r2[0];
+    },
+    warpBigNumber(value: string, decimals = 18, options?: { format?: string; fallback?: string; min?: number }) {
+      const { format = '0.0', fallback = '0.000', min } = options || {};
       if (!value) {
         return {
           value: '...',
@@ -125,20 +152,20 @@ export const helper = {
     },
     //http://numeraljs.com/ format params does not need to deal with decimal places
     //format: '$0,0' '0a' '0,0' '0,0$'
-    numberFormat(str: string | number, format: string = '0,0', options?: { min?: number, fallback?: string }): string {
-      const { fallback = "0.00" } = options || {};
+    numberFormat(str: string | number, format: string = '0,0', options: { min?: number; fallback?: string } = {}): string {
+      const { fallback = '0.00' } = options || {};
 
       if (!str || isNaN(Number(str))) return fallback;
       const numStr = new BigNumber(str).toFixed();
       const countNonZeroNumbers = (_str: string) => {
-        const decimalPointIndex = _str.indexOf(".");
+        const decimalPointIndex = _str.indexOf('.');
         if (decimalPointIndex === -1) {
           return 0;
         }
         const decimalPart = _str.substring(decimalPointIndex + 1);
         let trailingZerosCount = 0;
         for (let i = 0; i < decimalPart.length; i++) {
-          if (decimalPart[i] === "0") {
+          if (decimalPart[i] === '0') {
             trailingZerosCount++;
           } else {
             break;
@@ -155,19 +182,43 @@ export const helper = {
         }
       }
       const fullStr = new BigNumber(numStr).toFixed();
-      let preStr = numeral(fullStr.split(".")[0]).format(format.split(".")[0]);
-      const fractionStr = fullStr.split(".")?.[1]?.slice(0, fractionDigits + numberFractionDigits);
+      let preStr = numeral(fullStr.split('.')[0]).format(format.split('.')[0]);
+      const fractionStr = fullStr.split('.')?.[1]?.slice(0, fractionDigits + numberFractionDigits);
 
       if (numberFractionDigits >= fractionDigits) {
-        return (preStr + "." + fractionStr).replace(/\.?0+$/, '')
+        return (preStr + '.' + fractionStr).replace(/\.?0+$/, '');
       }
 
       if (fractionStr?.[fractionDigits - 1] == '9') {
-        return (preStr + '.' + fractionStr.slice(0, fractionDigits - 1) + '9').replace(/\.?0+$/, '')
+        return (preStr + '.' + fractionStr.slice(0, fractionDigits - 1) + '9').replace(/\.?0+$/, '');
       }
 
-      const resultStr = numeral(new BigNumber(numStr).toString()).format(format)
-      return resultStr.replace(/\.?0+$/, '')
-    }
+      const resultStr = numeral(new BigNumber(numStr).toString()).format(format);
+      return resultStr.replace(/\.?0+$/, '');
+    },
   },
-}
+  encode: async (jwtClaims: { sub: string; name: string; iat: number; exp: number }) => {
+    return jwt.sign(jwtClaims, process.env.JWT_SECRET, { algorithm: 'HS256' });
+  },
+  decode: async (token: string): Promise<{ sub: string; name: string; iat: number; exp: number }> => {
+    //@ts-ignore
+    return jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
+  },
+  env: {
+    //@ts-ignore
+    isBrowser: typeof window === 'undefined' ? false : true,
+    isIopayMobile: typeof window !== 'undefined' && window.navigator?.userAgent?.toLowerCase().includes('iopay'),
+    isPc() {
+      const userAgentInfo = typeof window !== 'undefined' && window.navigator?.userAgent;
+      const Agents = ['Android', 'iPhone', 'SymbianOS', 'Windows Phone', 'iPad', 'iPod'];
+      let flag = true;
+      for (let v = 0; v < Agents.length; v++) {
+        if (userAgentInfo && userAgentInfo.indexOf(Agents[v]!) > 0) {
+          flag = false;
+          break;
+        }
+      }
+      return flag;
+    },
+  },
+};

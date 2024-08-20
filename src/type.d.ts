@@ -1,7 +1,7 @@
 declare module 'remult' {
-    interface FieldOptions<entityType, valueType> {
-        placeholderText?: string
-    }
+  interface FieldOptions<entityType, valueType> {
+    placeholderText?: string;
+  }
 }
 
-export { }
+export {};

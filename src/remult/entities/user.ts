@@ -6,7 +6,7 @@ import { Entity, Fields, Validators } from 'remult';
 })
 export class User {
   @Fields.string({
-    validate: Validators.required,
+    validate: Validators.required
   })
   id: string;
 

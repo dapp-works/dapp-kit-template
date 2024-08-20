@@ -55,10 +55,10 @@ html {
 
     --radius: 0.5rem;
 
-    --md-editor-bg: #f4f4f5;
+    --md-editor-bg: #fff;
     --md-editor-text: hsl(222.2 47.4% 11.2%);
     --md-editor-separator: #bcbcbe;
-    --md-editor-border: #f4f4f5;
+    --md-editor-border: #e5e7eb;
   }
 
   .dark {
@@ -95,7 +95,7 @@ html {
 
     --radius: 0.5rem;
 
-    --md-editor-bg: #27272a;
+    --md-editor-bg: #09090b;
     --md-editor-text: hsl(210 40% 98%);
     --md-editor-separator: #4b4b4d;
     --md-editor-border: #27272a;
@@ -106,41 +106,22 @@ html {
 }
 
 
-.custom-table thead tr th {
-  @apply py-2.5 px-2;
-}
-.custom-table thead tr th:first-child {
-  border-radius: 10px 0 0 10px;
-}
-.custom-table thead tr th:last-child {
-  border-radius: 0 10px 10px 0;
-}
-.custom-table tbody tr {
-  @apply border-b-1 border-solid border-[#E2E8F0] dark:border-[#121212];
-}
-.custom-table tbody tr td {
-  @apply py-2.5 px-2;
-}
-/* .custom-table tbody tr:last-child {
-  @apply border-b-1 border-solid border-[#E2E8F0] dark:border-[#121212];
-} */
-
-.custom-table-fixed {
+.fixed-table-left-column {
   @apply table-fixed;
 }
-.custom-table-fixed th:first-child {
-  @apply sticky left-0 z-50;
+.fixed-table-left-column th:first-child {
+  @apply sticky left-0 z-20;
 }
-.custom-table-fixed td:first-child {
-  @apply sticky left-0;
+.fixed-table-left-column td:first-child {
+  @apply sticky left-0 z-20;
 }
-.custom-table-fixed tr,
-.custom-table-fixed th {
-  @apply bg-[#F4F4F5] dark:bg-[#3F3F45];
+.fixed-table-left-column tr,
+.fixed-table-left-column th {
+  @apply bg-[#f8f8f8] dark:bg-[#212121];
 }
-.custom-table-fixed td {
-  @apply bg-[#fff] dark:bg-[#18181B];
+.fixed-table-left-column td {
+  @apply bg-[#fff] dark:bg-[#181818];
 }
-.custom-table-fixed tr:hover td {
-  @apply bg-[#f6f6f9] dark:bg-[#29292c] !important;
+.fixed-table-left-column tr:hover td {
+  @apply bg-[#fcfcfc] dark:bg-[#1a1a1a] !important;
 }

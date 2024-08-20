@@ -1,4 +1,4 @@
-import { Allow, BackendMethod, remult, withRemult } from 'remult';
+import { Allow, BackendMethod, remult } from 'remult';
 import { Team } from '../entities/team';
 import { TeamUser } from '../entities/teamUser';
 

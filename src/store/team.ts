@@ -11,7 +11,7 @@ export default class TeamStore implements Store {
 
   teams = new PromiseState<any, TeamUser[]>({
     defaultValue: [],
-    //@ts-ignore
+    // @ts-ignore
     currentIndex: StoragePlugin.Get({ key: 'current-team', value: 0, engine: StoragePlugin.engines.localStorage }),
     onSelect: (val) => {
       this.teams._onSelect(val);

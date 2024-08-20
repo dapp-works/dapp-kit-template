@@ -1,4 +1,4 @@
-import { defineChain } from "viem";
+import { defineChain } from 'viem';
 
 export const iotexTestnet = /*#__PURE__*/ defineChain({
   id: 4_690,
@@ -27,8 +27,9 @@ export const iotexTestnet = /*#__PURE__*/ defineChain({
       address: '0xb5cecD6894c6f473Ec726A176f1512399A2e355d',
     },
   },
-  testnet: true
-})
+  testnet: true,
+});
+
 export const iotex = /*#__PURE__*/ defineChain({
   id: 4_689,
   name: 'IoTeX',
@@ -55,5 +56,5 @@ export const iotex = /*#__PURE__*/ defineChain({
     multicall3: {
       address: '0xcA11bde05977b3631167028862bE2a173976CA11',
     },
-  }
-})
+  },
+});
