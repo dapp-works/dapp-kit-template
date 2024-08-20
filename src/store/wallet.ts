@@ -34,15 +34,14 @@ const ioPayWallet = (): Wallet => ({
   name: 'ioPay',
   iconUrl: '/iopay-wallet.svg',
   iconBackground: 'transparent',
-  hidden: () => {
-    if (typeof window !== 'undefined') {
-      if (helper.env.isIopayMobile) {
-        return false;
-      }
-      return true;
-    } else {
-      return true;
-    }
+  downloadUrls: {
+    android: 'https://iopay.me/',
+    ios: 'https://iopay.me/',
+    chrome: 'https://iopay.me/',
+    qrCode: 'https://iopay.me/',
+  },
+  mobile: {
+    getUri: (uri: string) => uri,
   },
   createConnector: (walletDetails: WalletDetailsParams) => injectedWallet().createConnector(walletDetails),
 });
