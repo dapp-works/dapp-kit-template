@@ -21,11 +21,11 @@ const supportedChains: readonly [Chain, ...Chain[]] = [
   {
     ...iotex,
     // @ts-ignore
-    iconUrl: 'https://mimo.exchange/images/iotex.svg',
+    iconUrl: 'https://icons.llamao.fi/icons/chains/rsz_iotex.jpg',
   },
   {
     ...iotexTestnet,
-    iconUrl: '/iotex.svg',
+    iconUrl: 'https://icons.llamao.fi/icons/chains/rsz_iotex.jpg',
   },
 ];
 
