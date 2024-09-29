@@ -1,5 +1,5 @@
-import { WalletStore } from "@/store/wallet"
 import { RootStore } from "@dappworks/kit"
+import { WalletStore } from "@dappworks/kit/wallet"
 
 export const hooks = {
   async waitAccount(chainId: number) {

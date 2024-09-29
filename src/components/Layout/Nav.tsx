@@ -9,13 +9,13 @@ import TeamStore from '@/store/team';
 import { cn } from '@/lib/utils';
 import { signIn, signOut } from 'next-auth/react';
 import { ComplexFormModalStore, getComplexFormData } from '@dappworks/kit/form';
-import { WalletButton } from '../WalletProvider/WalletButton';
 import { ToastPlugin } from '@dappworks/kit/plugins';
 import ThemeSwitcher from './ThemeSwitcher';
-import GeneralWalletUserDropdown from './GeneralWalletUserDropdown';
 import NavItem from './NavItem';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { LogOut } from 'lucide-react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import LocaleSwitcher from '../Common/LocaleSwitcher';
 
 const AppNavbar = observer(() => {
   const project = RootStore.Get(Project);
@@ -42,7 +42,8 @@ const AppNavbar = observer(() => {
         })}
         <NavbarItem className="hidden lg:flex items-center space-x-2">
           <UserInfo />
-          <WalletButton customDropdown={(displayName) => <GeneralWalletUserDropdown displayName={displayName} />} />
+          <ConnectButton />
+          <LocaleSwitcher />
           <ThemeSwitcher />
         </NavbarItem>
       </NavbarContent>
@@ -55,7 +56,7 @@ const AppNavbar = observer(() => {
         </NavbarMenuItem>
         <NavbarMenuItem className="flex items-center space-x-2">
           <UserInfo />
-          <WalletButton customDropdown={(displayName) => <GeneralWalletUserDropdown displayName={displayName} />} />
+          <ConnectButton />
           <ThemeSwitcher />
         </NavbarMenuItem>
       </NavbarMenu>
@@ -156,7 +157,7 @@ const UserInfo = observer(() => {
                   }
                 },
               });
-            } catch (error) {}
+            } catch (error) { }
           }}
         >
           Create new team

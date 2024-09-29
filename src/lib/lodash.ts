@@ -15,6 +15,7 @@ import merge from "lodash/merge";
 import isEqual from "lodash/isEqual";
 import uniqWith from "lodash/uniqWith";
 import orderBy from "lodash/orderBy";
+import pick from "lodash/pick"
 
 export const _ = {
   throttle,
@@ -34,4 +35,5 @@ export const _ = {
   isEqual,
   uniqWith,
   orderBy,
+  pick
 };

@@ -10,23 +10,33 @@ import Team from '@/store/team';
 import { initStore } from '@/store';
 import { DeviceDetectStore } from '@/store/deviceDetect';
 import { useEffect } from 'react';
-import { Router } from 'next/router';
+import { Router, useRouter } from 'next/router';
 import NProgress from 'nprogress';
+import { NextIntlClientProvider } from 'next-intl';
+import { WalletProvider } from '@dappworks/kit/wallet';
 
 const MyApp = ({ Component, pageProps }) => {
+  const router = useRouter();
   initStore();
   RootStore.Get(Team).useTeams();
   RootStore.Get(DeviceDetectStore).use();
   useProgressBar();
 
   return (
-    <SessionProvider session={pageProps.session}>
-      <NextUIProvider>
-        <ThemeProvider attribute="class" enableSystem={false}>
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </NextUIProvider>
-    </SessionProvider>
+    <WalletProvider compatibleMode={false}>
+      <SessionProvider session={pageProps.session}>
+        <NextUIProvider>
+          <ThemeProvider attribute="class" enableSystem={false}>
+            <NextIntlClientProvider
+              locale={router.locale}
+              messages={pageProps.messages}
+              timeZone="Europe/Vienna">
+              <Component {...pageProps} />
+            </NextIntlClientProvider>
+          </ThemeProvider>
+        </NextUIProvider>
+      </SessionProvider>
+    </WalletProvider>
   );
 };
 

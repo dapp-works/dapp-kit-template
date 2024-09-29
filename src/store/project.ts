@@ -1,4 +1,4 @@
-import { Store } from '@dappworks/kit';
+import { PromiseState, Store } from '@dappworks/kit';
 import { StoragePlugin } from '@dappworks/kit/experimental';
 
 export class Project implements Store {
@@ -24,4 +24,10 @@ export class Project implements Store {
       target: '_blank',
     },
   ];
+
+  autoManTest = new PromiseState({
+    function: async () => {
+      return [1, 2, 3]
+    }
+  })
 }

@@ -12,7 +12,7 @@ const MyAppProvider = dynamic(() => import('./MyAppProvider').then((ctx) => ctx.
   ssr: false,
 });
 
-const WalletProvider = dynamic(() => import('../WalletProvider').then((ctx) => ctx.WalletProvider), {
+const WalletProvider = dynamic(() => import('@dappworks/kit/wallet').then((ctx) => ctx.WalletProvider), {
   ssr: false,
 });
 
@@ -75,14 +75,13 @@ function Container(props: ContainerProps) {
           cardType: 'summary_large_image',
         }}
       /> */}
-      <WalletProvider>
-        <Nav />
-        <main id="skip" className={cn('min-h-[calc(100vh-70px)] py-6 px-4 box-border', className)}>
-          {children}
-        </main>
-        {showFooter && <Footer className={footerClassName} />}
-        <MyAppProvider />
-      </WalletProvider>
+
+      <Nav />
+      <main id="skip" className={cn('min-h-[calc(100vh-70px)] py-6 px-4 box-border', className)}>
+        {children}
+      </main>
+      {showFooter && <Footer className={footerClassName} />}
+      <MyAppProvider />
     </>
   );
 }
