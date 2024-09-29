@@ -1,5 +1,5 @@
 import { GetStaticProps, GetStaticPropsContext, GetStaticPropsResult } from 'next';
-import _ from 'lodash';
+import { _ } from '@/lib/lodash';
 import { Messages } from 'global';
 import { InferGetStaticPropsType } from 'next/types';
 
