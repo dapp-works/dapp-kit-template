@@ -1,7 +1,7 @@
 import { GetStaticProps, GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import { _ } from '@/lib/lodash';
 import { Messages } from 'global';
-import { InferGetStaticPropsType } from 'next/types';
+import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, InferGetStaticPropsType } from 'next/types';
 
 interface StaticProps {
   messages?: Messages;
@@ -16,21 +16,53 @@ export function withIntlGetStaticProps<T extends StaticProps = StaticProps>(
   }
 ): GetStaticProps<T> {
   return async function getStaticProps(context) {
-    const { locale } = context;
-    const allMessages = (await import(`@/messages/${locale}.json`)).default as Messages;
-    const messages = options?.fields && options?.fields.length > 0 ? _.pick(allMessages, options?.fields) : allMessages;
+    try {
+      const { locale } = context;
+      const allMessages = (await import(`@/messages/${locale}.json`)).default as Messages;
+      const messages = options?.fields && options?.fields.length > 0 ? _.pick(allMessages, options?.fields) : allMessages;
 
-    let additionalProps = {};
-    if (typeof getAdditionalProps === 'function') {
-      additionalProps = await getAdditionalProps(context);
+      let additionalProps = {};
+      if (typeof getAdditionalProps === 'function') {
+        additionalProps = await getAdditionalProps(context);
+      }
+
+      return {
+        props: {
+          messages,
+          ...additionalProps,
+        },
+        revalidate: options?.revalidate ?? false,
+      } as GetStaticPropsResult<T>;
+    } catch (error) {
+      return { notFound: true, }
     }
+  };
+}
 
-    return {
-      props: {
-        messages,
-        ...additionalProps,
-      },
-      revalidate: options?.revalidate ?? false,
-    } as GetStaticPropsResult<T>;
+
+export function withIntlGetServerSideProps<T extends StaticProps = StaticProps>(
+  getAdditionalProps?: (context: GetServerSidePropsContext) => Promise<T | {}>,
+  options?: {
+    fields?: [keyof Messages];
+  }
+): GetServerSideProps<T> {
+  return async function getServerSideProps(context) {
+    try {
+      const { locale } = context;
+      const allMessages = (await import(`@/messages/${locale}.json`)).default as Messages;
+      const messages = options?.fields && options.fields.length > 0 ? _.pick(allMessages, options.fields) : allMessages;
+      let additionalProps = {};
+      if (typeof getAdditionalProps === 'function') {
+        additionalProps = await getAdditionalProps(context);
+      }
+      return {
+        props: {
+          messages,
+          ...additionalProps,
+        },
+      } as GetServerSidePropsResult<T>;
+    } catch (error) {
+      return { notFound: true, }
+    }
   };
 }

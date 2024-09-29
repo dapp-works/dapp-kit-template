@@ -1,18 +1,11 @@
 import { NextSeo } from 'next-seo';
 import { observer } from 'mobx-react-lite';
 import { cn, getCanonicalUrl } from '@/lib/utils';
-import { useRouter } from 'next/router';
 import Nav from './Nav';
 import dynamic from 'next/dynamic';
 import Footer from './Footer';
-import Head from 'next/head';
-import { helper } from '@/lib/helper';
 
 const MyAppProvider = dynamic(() => import('./MyAppProvider').then((ctx) => ctx.MyAppProvider), {
-  ssr: false,
-});
-
-const WalletProvider = dynamic(() => import('@dappworks/kit/wallet').then((ctx) => ctx.WalletProvider), {
   ssr: false,
 });
 

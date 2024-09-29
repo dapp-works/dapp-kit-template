@@ -6,11 +6,11 @@ import { _ } from '@/lib/lodash';
 import { observer } from 'mobx-react-lite';
 import { useTranslations } from 'next-intl';
 import { GetStaticProps } from 'next';
-import { withIntlGetStaticProps } from '@/lib/withIntlGetStaticProps';
-import { InferGetStaticPropsType } from 'next/types';
+import { withIntlGetServerSideProps, withIntlGetStaticProps } from '@/lib/withIntlGetStaticProps';
+import { InferGetStaticPropsType, InferGetServerSidePropsType } from 'next/types';
 import { Button } from '@nextui-org/react';
 
-const Home = observer(({ description }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Home = observer(({ time }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const t = useTranslations('Global');
   const wallet = RootStore.Get(WalletStore);
   const { project } = AutoMan.use({ project: RootStore.Get(Project) }, {
@@ -42,15 +42,18 @@ const Home = observer(({ description }: InferGetStaticPropsType<typeof getStatic
         }}>Send Raw Tx</Button>
         <div>{project?.autoManTest.value?.map(i => i)}</div>
         <div>{t('home')}</div>
-        <div>{description}</div>
+        <div>{time}</div>
       </div>
     </Container>
   );
 });
 
-export const getStaticProps = withIntlGetStaticProps(async () => {
-  return { description: 'This is a sample description from additional props!', };
-}, { fields: ['Global'], revalidate: 15 });
+// export const getStaticProps = withIntlGetStaticProps(async (context) => {
+//   return { time: new Date().toLocaleTimeString(), };
+// }, { fields: ['Global'], revalidate: 15 });
 
+export const getServerSideProps = withIntlGetServerSideProps(async (context) => {
+  return { time: new Date().toLocaleTimeString(), };
+}, { fields: ['Global'] });
 
 export default Home;
